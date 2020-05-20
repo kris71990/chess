@@ -39,11 +39,11 @@ void Board::init()
 
   std::map<Position, Piece*>::iterator it;
   for (it = white_pieces.begin(); it != white_pieces.end(); ++it) {
-    board[it -> first.x][it -> first.y] = "\x1b[1;97m" + it -> second -> get_board_char(); //"\x1b[1;97m"
+    board[it -> first.x][it -> first.y] = "\x1b[1;97m" + it -> second -> get_board_char();
   }
 
   for (it = black_pieces.begin(); it != black_pieces.end(); ++it) {
-    board[it -> first.x][it -> first.y] = "\x1b[1;30m" + it -> second -> get_board_char(); //"\x1b[1;30m" + 
+    board[it -> first.x][it -> first.y] = "\x1b[1;30m" + it -> second -> get_board_char();
   }
 }
 
@@ -75,17 +75,25 @@ void Board::draw_board()
 
 void Board::print_possible_moves(const std::vector<std::array<int, 2>>& moves) {
   std::map<int, char>::iterator it;
+  std::vector<std::array<int, 2>>::size_type length = moves.size();
+  int counter = 0;
+  std::cout << "\nPossible moves: ";
+
   for (const std::array<int, 2>& move : moves) {
+    ++counter;
     it = Board::grid_translator.find(move[1]);
     int invertedY = 8 - move[0];
-    std::cout << it -> second << invertedY << "\n";
+    std::cout << it -> second << invertedY << (length == counter ? "\n" : ", ");
   }
+  std::cout << "\n";
 }
 
 std::string Board::get_piece_from_coordinates(std::string square) {
   char letterFrom = square[0];
-  int numberFrom = square[1];
-  return board[8 - numberFrom][grid_translator_y[letterFrom]];
+  int numberFrom = square[1] - '0';
+  std::string piece = board[8 - numberFrom][grid_translator_y[letterFrom]];
+  std::size_t pos = piece.find('m');
+  return piece.substr(pos + 1);
 }
 
 std::vector<std::vector<int>> Board::parse_move_input(std::map<std::string, std::string>& move) {

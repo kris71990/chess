@@ -4,7 +4,6 @@
 #include <vector>
 
 #include "../include/game_info.hpp"
-// #include "../include/Moves.hpp"
 #include "../include/Board.hpp"
 #include "../include/Piece.hpp"
 
@@ -39,8 +38,6 @@ std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yF
           delete it_to_black -> second; 
           board.black_pieces.erase(it_to_black);
         }
-        // possible_moves = Possible_Moves::pawn_moves(board, turn, it_from -> first.x, it_from -> first.y);
-        // board.print_possible_moves(possible_moves);
         return validated_move;    
       }
     } else {
@@ -69,8 +66,6 @@ std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yF
           delete it_to_white -> second; 
           board.white_pieces.erase(it_to_white);
         }
-        // possible_moves = king_moves(board.board, turn, it_from -> first.x, it_from -> first.y);
-        // board.print_possible_moves(possible_moves);
         return validated_move;    
       }
     } else {
