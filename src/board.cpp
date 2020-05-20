@@ -82,6 +82,12 @@ void Board::print_possible_moves(const std::vector<std::array<int, 2>>& moves) {
   }
 }
 
+std::string Board::get_piece_from_coordinates(std::string square) {
+  char letterFrom = square[0];
+  int numberFrom = square[1];
+  return board[8 - numberFrom][grid_translator_y[letterFrom]];
+}
+
 std::vector<std::vector<int>> Board::parse_move_input(std::map<std::string, std::string>& move) {
   char letterTo, letterFrom;
   int numberTo, numberFrom;

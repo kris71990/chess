@@ -15,6 +15,6 @@ namespace Game_Info {
   void print_help_menu();
   void print_initial_prompt(State game_state);
 
-  std::map<std::string, std::string> print_move_prompt(const Board& board, State& game_state);
+  std::map<std::string, std::string> print_move_prompt(Board& board, State& game_state);
   std::map<std::string, int> parse_current_move(std::map<std::string, std::string>& current_move);
 };

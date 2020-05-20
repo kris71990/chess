@@ -6,9 +6,9 @@
 #include "../include/game_info.hpp"
 #include "../include/Moves.hpp"
 
-bool hasEnding (std::string const &fullString, std::string const &ending) {
+bool hasEnding (std::string const fullString, std::string const ending) {
   if (fullString.length() >= ending.length()) {
-    return (0 == fullString.compare(fullString.length() - ending.length(), ending.length(), ending));
+    return (fullString.compare(fullString.length() - ending.length(), ending.length(), ending) == 0);
   } 
   return false;
 }
@@ -41,7 +41,7 @@ void Game_Info::print_initial_prompt(Game_Info::State game_state)
   std::cout << "\nGlobal Thermonuclear War might be thrilling, but chess seems a bit safer.\n";
 }
 
-std::map<std::string, std::string> Game_Info::print_move_prompt(const Board& board, Game_Info::State& game_state) {
+std::map<std::string, std::string> Game_Info::print_move_prompt(Board& board, Game_Info::State& game_state) {
   std::string spaceFrom;
   std::string spaceTo;
   std::string color;
@@ -55,7 +55,6 @@ std::map<std::string, std::string> Game_Info::print_move_prompt(const Board& boa
   
   std::cout << color << " to move\n";
   std::cout << "Select space to move from: ";
-  std::cin >> spaceFrom;
 
   if (spaceFrom == "q") {
     game_state.game_end = true;
@@ -69,11 +68,14 @@ std::map<std::string, std::string> Game_Info::print_move_prompt(const Board& boa
     Game_Info::print_game_log(game_state.log);
     return move;
   }
-  if (hasEnding(spaceFrom, "-h")) game_state.help = true;
-  if (hasEnding(spaceFrom, "-hx")) game_state.help = false;
+  if (hasEnding(spaceFrom, " -h")) game_state.help = true;
+  if (hasEnding(spaceFrom, " -hx")) game_state.help = false;
 
+  // std::cout <<spaceFrom;
   // if (game_state.help == true) {
-  //   std::string piece_type = board[]
+  //   std::cout << spaceFrom;
+  //   std::string location = board.get_piece_from_coordinates(spaceFrom);
+  //   std::cout << location;
   // }
 
   std::cout << "Select space to move to: ";

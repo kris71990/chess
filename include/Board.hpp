@@ -54,6 +54,8 @@ public:
   void init();
   void draw_board();
   void print_possible_moves(const std::vector<std::array<int, 2>>& moves);
+
+  std::string get_piece_from_coordinates(std::string coordinates);
   std::vector<std::vector<int>> parse_move_input(std::map<std::string, std::string>& move);
 
   bool is_on_board(int x, int y) { return ((x < 8 && x >= 0) && (y < 8 && y >= 0)) ? true : false; }
