@@ -7,6 +7,7 @@
 #include "../include/Moves.hpp"
 
 bool hasEnding (std::string const fullString, std::string const ending) {
+  std::cout << fullString << " " << ending;
   if (fullString.length() >= ending.length()) {
     return (fullString.compare(fullString.length() - ending.length(), ending.length(), ending) == 0);
   } 
@@ -55,6 +56,8 @@ std::map<std::string, std::string> Game_Info::print_move_prompt(Board& board, Ga
   
   std::cout << color << " to move\n";
   std::cout << "Select space to move from: ";
+  std::cin >> spaceFrom;
+  // std::getline(std::cin, spaceFrom);
 
   if (spaceFrom == "q") {
     game_state.game_end = true;
@@ -68,15 +71,13 @@ std::map<std::string, std::string> Game_Info::print_move_prompt(Board& board, Ga
     Game_Info::print_game_log(game_state.log);
     return move;
   }
+
   if (hasEnding(spaceFrom, " -h")) game_state.help = true;
   if (hasEnding(spaceFrom, " -hx")) game_state.help = false;
 
-  // std::cout <<spaceFrom;
-  // if (game_state.help == true) {
-  //   std::cout << spaceFrom;
-  //   std::string location = board.get_piece_from_coordinates(spaceFrom);
-  //   std::cout << location;
-  // }
+  if (game_state.help == true) {
+    std::string location = board.get_piece_from_coordinates(spaceFrom);
+  }
 
   std::cout << "Select space to move to: ";
   std::cin >> spaceTo;
