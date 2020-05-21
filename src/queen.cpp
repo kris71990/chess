@@ -4,8 +4,6 @@
 #include "../include/Queen.hpp"
 
 bool Queen::validate_move(std::array<std::array<std::string, 8>, 8> board, int turn, bool is_occupied, int xFrom, int yFrom, int xTo, int yTo) {
-  if ((xTo > 7 || xTo < 0) || (yTo > 7 || yTo < 0)) return false;
-
   // horizontal
   if (xTo == xFrom) {
     if (yFrom == yTo) return false;

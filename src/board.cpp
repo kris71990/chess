@@ -3,11 +3,11 @@
 
 #include "../include/Board.hpp"
 
-void Board::init()
+Board::Board()
 {
   for (int i = 0; i < 8; ++i) {
-    // black_pieces[Position(1, i)] = new Pawn();
-    // white_pieces[Position(6, i)] = new Pawn();
+    black_pieces[Position(1, i)] = new Pawn();
+    white_pieces[Position(6, i)] = new Pawn();
     
     if (i == 0 || i == 7) {
       black_pieces[Position(0, i)] = new Rook();
@@ -81,7 +81,7 @@ void Board::print_possible_moves(const std::vector<std::array<int, 2>>& moves) {
 
   for (const std::array<int, 2>& move : moves) {
     ++counter;
-    it = Board::grid_translator.find(move[1]);
+    it = Board::grid_translator_to_letter.find(move[1]);
     int invertedY = 8 - move[0];
     std::cout << it -> second << invertedY << (length == counter ? "\n" : ", ");
   }
@@ -91,7 +91,7 @@ void Board::print_possible_moves(const std::vector<std::array<int, 2>>& moves) {
 std::string Board::get_piece_from_coordinates(std::string square) {
   char letterFrom = square[0];
   int numberFrom = square[1] - '0';
-  std::string piece = board[8 - numberFrom][grid_translator_y[letterFrom]];
+  std::string piece = board[8 - numberFrom][grid_translator_to_index[letterFrom]];
   std::size_t pos = piece.find('m');
   return piece.substr(pos + 1);
 }

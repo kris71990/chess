@@ -4,7 +4,7 @@
 #include <limits>
 
 #include "../include/Board.hpp"
-#include "../include/game_info.hpp"
+#include "../include/Game_Info.hpp"
 #include "../include/Moves.hpp"
 
 bool hasEnding (std::string const fullString, std::string const ending) {
@@ -12,7 +12,7 @@ bool hasEnding (std::string const fullString, std::string const ending) {
     return (fullString.compare(fullString.length() - ending.length(), ending.length(), ending) == 0);
   } 
   return false;
-}
+};
 
 void Game_Info::print_game_log(const std::vector<std::string>& game_log) 
 {
@@ -77,7 +77,7 @@ std::map<std::string, std::string> Game_Info::print_move_prompt(Board& board, Ga
   if (game_state.help == true) {
     std::string square_substr = spaceFrom.substr(0,2);
     int row = 8 - (square_substr[1] - '0');
-    int column = board.grid_translator_y[square_substr[0]];
+    int column = board.grid_translator_to_index[square_substr[0]];
     std::string moving_piece = board.get_piece_from_coordinates(square_substr);
     
     std::vector<std::array<int, 2>> moves;

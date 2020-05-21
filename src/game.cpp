@@ -3,14 +3,14 @@
 #include <array>
 #include <vector>
 
-#include "../include/game_info.hpp"
+#include "../include/Game_Info.hpp"
 #include "../include/Board.hpp"
 #include "../include/Piece.hpp"
 
 std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo, int yTo) 
 {
   std::vector<std::string> validated_move;
-  if (!board.is_on_board(xTo, yTo)) return validated_move;
+  if (Board::is_on_board(xTo, yTo)) return validated_move;
 
   std::map<Board::Position, Piece*>::iterator it_from;
   std::vector<std::array<int, 2>> possible_moves;
@@ -120,8 +120,8 @@ bool move_piece(Board& board, Game_Info::State& game_state)
     moved_piece.size() == 2 ? capture_string = " -- " + moved_piece[1] + " captured." : "";
     std::string move_str = 
       current_move["color"] + ": " + moved_piece[0] + " from " + 
-      board.grid_translator[yFrom] + std::to_string(8 - xFrom) + " to " + 
-      board.grid_translator[yTo] + std::to_string(8 - xTo) + 
+      board.grid_translator_to_letter[yFrom] + std::to_string(8 - xFrom) + " to " + 
+      board.grid_translator_to_letter[yTo] + std::to_string(8 - xTo) + 
       (capture_string == "" ? "" : capture_string);
     std::cout << move_str + "\n";
     
@@ -135,10 +135,9 @@ bool move_piece(Board& board, Game_Info::State& game_state)
 
 int main() 
 {
-  Game_Info::State game_state = { false, 0 };
+  Game_Info::State game_state { false, 0 };
   Game_Info::print_initial_prompt(game_state);
   Board board;
-  board.init();
 
   while (game_state.game_end == false) {
     board.draw_board();

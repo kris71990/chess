@@ -15,19 +15,33 @@
 
 class Board {
 public:
+  Board();
+
   std::array<std::array<std::string, 8>, 8> board;
 
   struct Position {
-    int x,y;
-    Position(const Position &p, int dx = 0, int dy = 0) { *this = p; x += dx; y += dy;}
+    int x, y;
+
+    Position(const Position& p, int dx = 0, int dy = 0) { *this = p; x += dx; y += dy; }
     Position(int _x, int _y) : x(_x), y(_y) {}
-    bool operator<(const Position &p) const { return (x < p.x) || (x == p.x && y < p.y); }
-    bool operator==(const Position &p) const { return x == p.x && y == p.y; }
+
+    bool operator<(const Position& p) const { return (x < p.x) || (x == p.x && y < p.y); }
+    bool operator==(const Position& p) const { return x == p.x && y == p.y; }
   };
 
   std::map<Position, Piece*> white_pieces;
   std::map<Position, Piece*> black_pieces;
-  std::map<int, char> grid_translator = 
+  
+  void draw_board();
+  void print_possible_moves(const std::vector<std::array<int, 2>>& moves);
+
+  std::string get_piece_from_coordinates(std::string coordinates);
+  std::vector<std::vector<int>> parse_move_input(std::map<std::string, std::string>& move);
+
+  bool is_unoccupied(int x, int y) const { return board[x][y] == " " ? true : false; }
+  static bool is_on_board(int x, int y) { return ((x < 8 && x >= 0) && (y < 8 && y >= 0)) ? true : false; }
+
+  std::map<int, char> grid_translator_to_letter = 
     {
       { 0, 'a' },
       { 1, 'b' },
@@ -39,7 +53,7 @@ public:
       { 7, 'h' },
     };
 
-  std::map<char, int> grid_translator_y =
+  std::map<char, int> grid_translator_to_index =
     {
       { 'a', 0 },
       { 'b', 1 },
@@ -50,16 +64,6 @@ public:
       { 'g', 6 },
       { 'h', 7 },
     };
-  
-  void init();
-  void draw_board();
-  void print_possible_moves(const std::vector<std::array<int, 2>>& moves);
-
-  std::string get_piece_from_coordinates(std::string coordinates);
-  std::vector<std::vector<int>> parse_move_input(std::map<std::string, std::string>& move);
-
-  bool is_on_board(int x, int y) { return ((x < 8 && x >= 0) && (y < 8 && y >= 0)) ? true : false; }
-  bool is_unoccupied(int x, int y) { return board[x][y] == " " ? true : false; }
 };
 
 #endif
