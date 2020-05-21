@@ -1,7 +1,8 @@
 #include <array>
 #include "../include/Bishop.hpp"
 
-bool Bishop::validate_move(std::array<std::array<std::string, 8>, 8> board, int turn, bool is_occupied, int xFrom, int yFrom, int xTo, int yTo) {
+bool Bishop::validate_move(std::array<std::array<std::string, 8>, 8> board, int turn, bool is_occupied, int xFrom, int yFrom, int xTo, int yTo) const
+{
   if ((yFrom == yTo) || (xFrom == xTo)) return false;
 
   if ((xFrom > xTo) && (yFrom > yTo)) { // up, left

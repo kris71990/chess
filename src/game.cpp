@@ -10,7 +10,7 @@
 std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo, int yTo) 
 {
   std::vector<std::string> validated_move;
-  if (Board::is_on_board(xTo, yTo)) return validated_move;
+  if (!Board::is_on_board(xTo, yTo)) return validated_move;
 
   std::map<Board::Position, Piece*>::iterator it_from;
   std::vector<std::array<int, 2>> possible_moves;

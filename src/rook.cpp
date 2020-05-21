@@ -1,8 +1,8 @@
 #include <array>
 #include "../include/Rook.hpp"
-#include "../include/Board.hpp"
 
-bool Rook::validate_move(std::array<std::array<std::string, 8>, 8> board, int turn, bool is_occupied, int xFrom, int yFrom, int xTo, int yTo) {
+bool Rook::validate_move(std::array<std::array<std::string, 8>, 8> board, int turn, bool is_occupied, int xFrom, int yFrom, int xTo, int yTo) const
+{
   // horizontal
   if (xTo == xFrom) {
     if (yFrom == yTo) return false;
