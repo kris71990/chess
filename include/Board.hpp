@@ -17,7 +17,7 @@ class Board {
 public:
   Board();
 
-  std::array<std::array<std::string, 8>, 8> board;
+  std::array<std::array<std::string, 8>, 8> board {};
 
   struct Position {
     int x, y;
@@ -29,8 +29,8 @@ public:
     bool operator==(const Position& p) const { return x == p.x && y == p.y; }
   };
 
-  std::map<Position, Piece*> white_pieces;
-  std::map<Position, Piece*> black_pieces;
+  std::map<Position, Piece*> white_pieces {};
+  std::map<Position, Piece*> black_pieces {};
   
   void draw_board();
   void print_possible_moves(const std::vector<std::array<int, 2>>& moves);

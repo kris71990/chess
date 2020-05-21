@@ -8,7 +8,7 @@ public:
   Piece(){}
   virtual ~Piece(){}
 
-  virtual std::string get_board_char()const = 0;
+  virtual std::string get_board_char() const = 0;
   virtual std::string get_type() const = 0;
   
   virtual bool validate_move(std::array<std::array<std::string, 8>, 8> board, int turn, bool is_occupied, int xFrom, int yFrom, int xTo, int yTo) const = 0;

@@ -44,9 +44,9 @@ void Game_Info::print_initial_prompt(Game_Info::State game_state)
 }
 
 std::map<std::string, std::string> Game_Info::print_move_prompt(Board& board, Game_Info::State& game_state) {
-  std::string spaceFrom;
-  std::string color;
-  std::map<std::string, std::string> move;
+  std::string spaceFrom {};
+  std::string color {};
+  std::map<std::string, std::string> move {};
 
   if (game_state.turn % 2 == 0) {
     color = "White";
@@ -75,10 +75,10 @@ std::map<std::string, std::string> Game_Info::print_move_prompt(Board& board, Ga
   if (hasEnding(spaceFrom, "-hx")) game_state.help = false;
 
   if (game_state.help == true) {
-    std::string square_substr = spaceFrom.substr(0,2);
-    int row = 8 - (square_substr[1] - '0');
-    int column = board.grid_translator_to_index[square_substr[0]];
-    std::string moving_piece = board.get_piece_from_coordinates(square_substr);
+    std::string square_substr { spaceFrom.substr(0,2) };
+    int row { 8 - (square_substr[1] - '0') };
+    int column { board.grid_translator_to_index[square_substr[0]] };
+    std::string moving_piece { board.get_piece_from_coordinates(square_substr) };
     
     std::vector<std::array<int, 2>> moves;
     if (moving_piece == "P") {

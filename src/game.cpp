@@ -14,7 +14,7 @@ std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yF
 
   std::map<Board::Position, Piece*>::iterator it_from;
   std::vector<std::array<int, 2>> possible_moves;
-  bool is_occupied = false;
+  bool is_occupied { false };
 
   if (turn % 2 == 0) {
     std::map<Board::Position, Piece*>::iterator it_to_white;
@@ -27,7 +27,7 @@ std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yF
     it_from = board.white_pieces.find(Board::Position(xFrom, yFrom));
 
     if (it_from != board.white_pieces.end()) {
-      std::string piece_type = it_from -> second -> get_type();
+      std::string piece_type { it_from -> second -> get_type() };
       if (it_to_black != board.black_pieces.end()) is_occupied = true;
 
       if (it_from -> second -> validate_move(board.board, turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
@@ -84,10 +84,10 @@ bool move_piece(Board& board, Game_Info::State& game_state)
   }
 
   std::vector<std::vector<int>> move_coordinates = board.parse_move_input(current_move);
-  int xFrom = move_coordinates[0][0];
-  int yFrom = move_coordinates[0][1];
-  int xTo = move_coordinates[1][0];
-  int yTo = move_coordinates[1][1];
+  int xFrom { move_coordinates[0][0] };
+  int yFrom { move_coordinates[0][1] };
+  int xTo { move_coordinates[1][0] };
+  int yTo { move_coordinates[1][1] };
 
   std::vector<std::string> moved_piece = is_valid_move(board, game_state.turn, xFrom, yFrom, xTo, yTo);
 
@@ -116,7 +116,7 @@ bool move_piece(Board& board, Game_Info::State& game_state)
     }
     board.board[xFrom][yFrom] = " ";
 
-    std::string capture_string;
+    std::string capture_string {};
     moved_piece.size() == 2 ? capture_string = " -- " + moved_piece[1] + " captured." : "";
     std::string move_str = 
       current_move["color"] + ": " + moved_piece[0] + " from " + 
