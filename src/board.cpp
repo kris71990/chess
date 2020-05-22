@@ -6,8 +6,8 @@
 Board::Board()
 {
   for (int i = 0; i < 8; ++i) {
-    black_pieces[Position(1, i)] = new Pawn();
-    white_pieces[Position(6, i)] = new Pawn();
+    // black_pieces[Position(1, i)] = new Pawn();
+    // white_pieces[Position(6, i)] = new Pawn();
     
     if (i == 0 || i == 7) {
       black_pieces[Position(0, i)] = new Rook();
