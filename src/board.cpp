@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "../include/Board.hpp"
+#include "../include/Moves.hpp"
 
 Board::Board()
 {
@@ -135,4 +136,17 @@ std::vector<std::vector<int>> Board::parse_move_input(std::map<std::string, std:
       { xTo, yTo },
     };
   return parsed_move;
+}
+
+bool is_check(std::string board_char, int turn, int x, int y) {
+  // find where location of king is in opposing piece map
+  // call possible_moves function for piece type (board_char) from x,y
+  // if location of king is in possible_moves vector, return true
+  // else return false
+}
+
+bool is_checkmate(std::string board_char, int turn, int x, int y) {
+  // find king of opposing color
+  // call possible_moves; if king has no possible moves - return true, end game
+  // else return false
 }

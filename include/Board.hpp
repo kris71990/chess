@@ -42,6 +42,8 @@ public:
   bool has_white_piece(int x, int y);
   bool has_black_piece(int x, int y);
   static bool is_on_board(int x, int y) { return ((x < 8 && x >= 0) && (y < 8 && y >= 0)) ? true : false; }
+  bool is_check(std::string board_char, int turn, int x, int y);
+  bool is_checkmate(std::string board_char, int turn, int x, int y);
 
   std::map<int, char> grid_translator_to_letter = 
     {

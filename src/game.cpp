@@ -94,15 +94,19 @@ bool move_piece(Board& board, Game_Info::State& game_state)
   if (!moved_piece.empty()) {
     std::map<Board::Position, Piece*>::iterator it;
     if (game_state.turn % 2 == 0) {
+      std::string board_char = it -> second -> get_board_char();
       /* updating pointer map flow */
 
       // 1. find pointer to piece being moved
       it = board.white_pieces.find(Board::Position(xFrom, yFrom));
       // 2. assign piece pointer to new position
       board.white_pieces[Board::Position(xTo, yTo)] = it -> second;
-      board.board[xTo][yTo] = "\x1b[1;97m" + it -> second -> get_board_char();
+      board.board[xTo][yTo] = "\x1b[1;97m" + board_char;
       // 4. Erase map entry of old position
       board.white_pieces.erase(Board::Position(xFrom, yFrom));
+
+      // call board.is_check(board_char, turn, xTo, yTo)
+      // if (check) call board.is_checkmate()
     } else {
       /* updating pointer map flow */
 
@@ -113,6 +117,9 @@ bool move_piece(Board& board, Game_Info::State& game_state)
       board.board[xTo][yTo] = "\x1b[1;30m" + it -> second -> get_board_char();
       // 4. Erase map entry of old position
       board.black_pieces.erase(Board::Position(xFrom, yFrom));
+
+      // call board.is_check(board_char, turn, xTo, yTo)
+      // if (check) call board.is_checkmate()
     }
     board.board[xFrom][yFrom] = " ";
 
