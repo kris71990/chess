@@ -93,8 +93,9 @@ bool move_piece(Board& board, Game_Info::State& game_state)
 
   if (!moved_piece.empty()) {
     std::map<Board::Position, Piece*>::iterator it;
+    std::string board_char = it -> second -> get_board_char();
+
     if (game_state.turn % 2 == 0) {
-      std::string board_char = it -> second -> get_board_char();
       /* updating pointer map flow */
 
       // 1. find pointer to piece being moved
@@ -104,9 +105,6 @@ bool move_piece(Board& board, Game_Info::State& game_state)
       board.board[xTo][yTo] = "\x1b[1;97m" + board_char;
       // 4. Erase map entry of old position
       board.white_pieces.erase(Board::Position(xFrom, yFrom));
-
-      // call board.is_check(board_char, turn, xTo, yTo)
-      // if (check) call board.is_checkmate()
     } else {
       /* updating pointer map flow */
 
@@ -114,13 +112,24 @@ bool move_piece(Board& board, Game_Info::State& game_state)
       it = board.black_pieces.find(Board::Position(xFrom, yFrom));
       // 2. assign piece pointer to new position
       board.black_pieces[Board::Position(xTo, yTo)] = it -> second;
-      board.board[xTo][yTo] = "\x1b[1;30m" + it -> second -> get_board_char();
+      board.board[xTo][yTo] = "\x1b[1;30m" + board_char;
       // 4. Erase map entry of old position
       board.black_pieces.erase(Board::Position(xFrom, yFrom));
-
-      // call board.is_check(board_char, turn, xTo, yTo)
-      // if (check) call board.is_checkmate()
     }
+
+    // call board.is_check(board_char, turn, xTo, yTo)
+    // if (check) call board.is_checkmate()
+    // std::vector<int> king_location = board.is_check(board_char, game_state.turn, xTo, yTo);
+    // std::string check_status {};
+    // if (!king_location.empty()) {
+    //   if (board.is_checkmate(king_location[0], king_location[1], game_state.turn)) {
+    //     check_status = "-- Checkmate";
+    //     game_state.game_end = true;
+    //   } else {
+    //     check_status = "-- Check";
+    //   }
+    // }
+
     board.board[xFrom][yFrom] = " ";
 
     std::string capture_string {};
@@ -130,10 +139,16 @@ bool move_piece(Board& board, Game_Info::State& game_state)
       board.grid_translator_to_letter[yFrom] + std::to_string(8 - xFrom) + " to " + 
       board.grid_translator_to_letter[yTo] + std::to_string(8 - xTo) + 
       (capture_string == "" ? "" : capture_string);
+      // (check_status == "" ? "" : check_status);
     std::cout << move_str + "\n";
     
     ++game_state.turn;
     game_state.log.push_back(move_str);
+
+    // if (game_state.game_end) {
+    //   std::cout << current_move["color"] << " won in " << game_state.turn << " moves.\n";
+    //   std::cout << "Good game.\n";
+    // }
   } else {
     std::cout << "\nInvalid Move\n";
   }

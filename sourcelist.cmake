@@ -1,4 +1,5 @@
 target_sources(chess PRIVATE
+  src/moves.cpp
   src/info.cpp 
   src/board.cpp 
   src/pawn.cpp 

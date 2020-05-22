@@ -138,15 +138,50 @@ std::vector<std::vector<int>> Board::parse_move_input(std::map<std::string, std:
   return parsed_move;
 }
 
-bool is_check(std::string board_char, int turn, int x, int y) {
-  // find where location of king is in opposing piece map
+std::vector<int> Board::is_check(std::string board_char, int turn, int x, int y) {
   // call possible_moves function for piece type (board_char) from x,y
+  std::vector<std::array<int, 2>> moves;
+  if (board_char == "P") {
+    moves = Possible_Moves::pawn_moves(*this, turn, x, y);
+  } else if (board_char == "Kn") {
+    moves = Possible_Moves::knight_moves(*this, turn, x, y);
+  } else if (board_char == "B") {
+    moves = Possible_Moves::bishop_moves(*this, turn, x, y);
+  } else if (board_char == "R") {
+    moves = Possible_Moves::rook_moves(*this, turn, x, y);
+  } else if (board_char == "Q") {
+    moves = Possible_Moves::queen_moves(*this, turn, x, y);
+  } else if (board_char == "K") {
+    moves = Possible_Moves::king_moves(*this, turn, x, y);
+  }
+
+  // find where location of king is in opposing piece map
+  int xKing, yKing;
+  if (turn % 2 == 0) {
+    std::for_each(black_pieces.begin(), black_pieces.end(), [&xKing, &yKing](const auto entry) {
+      if (entry.second -> get_board_char() == "K") {
+        xKing = entry.first.x;
+        yKing = entry.first.y;
+      }
+    });
+  } else {
+    std::for_each(white_pieces.begin(), white_pieces.end(), [&xKing, &yKing](const auto entry) {
+      if (entry.second -> get_board_char() == "K") {
+        xKing = entry.first.x;
+        yKing = entry.first.y;
+      }
+    });
+  }
+
   // if location of king is in possible_moves vector, return true
-  // else return false
+  for (auto move : moves) {
+    if (xKing == move[0] && yKing == move[1]) return std::vector<int> { move[0], move[1] };
+  }
+  return std::vector<int> {};
 }
 
-bool is_checkmate(std::string board_char, int turn, int x, int y) {
-  // find king of opposing color
-  // call possible_moves; if king has no possible moves - return true, end game
-  // else return false
+bool Board::is_checkmate(int kingX, int kingY, int turn) {
+  std::vector<std::array<int, 2>> moves = Possible_Moves::king_moves(*this, kingX, kingY, turn);
+  if (moves.empty()) return true;
+  return false;
 }

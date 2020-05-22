@@ -38,12 +38,13 @@ public:
   std::string get_piece_from_coordinates(std::string coordinates);
   std::vector<std::vector<int>> parse_move_input(std::map<std::string, std::string>& move);
 
+  static bool is_on_board(int x, int y) { return ((x < 8 && x >= 0) && (y < 8 && y >= 0)) ? true : false; }
   bool is_unoccupied(int x, int y) const { return board[x][y] == " " ? true : false; }
   bool has_white_piece(int x, int y);
   bool has_black_piece(int x, int y);
-  static bool is_on_board(int x, int y) { return ((x < 8 && x >= 0) && (y < 8 && y >= 0)) ? true : false; }
-  bool is_check(std::string board_char, int turn, int x, int y);
-  bool is_checkmate(std::string board_char, int turn, int x, int y);
+
+  std::vector<int> is_check(std::string board_char, int turn, int x, int y);
+  bool is_checkmate(int kingX, int kingY, int turn);
 
   std::map<int, char> grid_translator_to_letter = 
     {
