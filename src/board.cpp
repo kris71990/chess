@@ -6,8 +6,8 @@
 Board::Board()
 {
   for (int i = 0; i < 8; ++i) {
-    // black_pieces[Position(1, i)] = new Pawn();
-    // white_pieces[Position(6, i)] = new Pawn();
+    black_pieces[Position(1, i)] = new Pawn();
+    white_pieces[Position(6, i)] = new Pawn();
     
     if (i == 0 || i == 7) {
       black_pieces[Position(0, i)] = new Rook();
@@ -41,8 +41,8 @@ Board::Board()
     board[entry.first.x][entry.first.y] = "\x1b[1;97m" + entry.second -> get_board_char();
   });
 
-  std::for_each(black_pieces.begin(), black_pieces.end(), [this](const auto pair) {
-    board[entry.first.x][entry.first.y] = "\x1b[1;97m" + entry.second -> get_board_char();
+  std::for_each(black_pieces.begin(), black_pieces.end(), [this](const auto entry) {
+    board[entry.first.x][entry.first.y] = "\x1b[1;30m" + entry.second -> get_board_char();
   });
 }
 
@@ -74,16 +74,16 @@ void Board::draw_board()
 
 bool Board::has_black_piece(int x, int y)
 {
-  Piece* p = black_pieces[(Position(x, y))];
-  if (p == 0) return false;
-  return true;
+  std::map<Position, Piece*>::iterator it = black_pieces.find(Position(x, y));
+  if (it != black_pieces.end()) return true;
+  return false;
 }
 
 bool Board::has_white_piece(int x, int y)
 {
-  Piece* p = white_pieces[(Position(x, y))];
-  if (p == 0) return false;
-  return true;
+  std::map<Position, Piece*>::iterator it = white_pieces.find(Position(x, y));
+  if (it != white_pieces.end()) return true;
+  return false;
 }
 
 void Board::print_possible_moves(const std::vector<std::array<int, 2>>& moves) {
