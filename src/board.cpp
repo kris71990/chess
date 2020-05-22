@@ -37,14 +37,13 @@ Board::Board()
 
   for (int i = 0; i < 8; ++i) { board[i].fill(" "); }
 
-  std::map<Position, Piece*>::iterator it;
-  for (it = white_pieces.begin(); it != white_pieces.end(); ++it) {
-    board[it -> first.x][it -> first.y] = "\x1b[1;97m" + it -> second -> get_board_char();
-  }
+  std::for_each(white_pieces.begin(), white_pieces.end(), [this](const auto entry) {
+    board[entry.first.x][entry.first.y] = "\x1b[1;97m" + entry.second -> get_board_char();
+  });
 
-  for (it = black_pieces.begin(); it != black_pieces.end(); ++it) {
-    board[it -> first.x][it -> first.y] = "\x1b[1;30m" + it -> second -> get_board_char();
-  }
+  std::for_each(black_pieces.begin(), black_pieces.end(), [this](const auto pair) {
+    board[entry.first.x][entry.first.y] = "\x1b[1;97m" + entry.second -> get_board_char();
+  });
 }
 
 void Board::draw_board() 
