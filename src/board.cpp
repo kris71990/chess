@@ -73,6 +73,20 @@ void Board::draw_board()
   std::cout << "\n------------------------------------------------\n\n";
 }
 
+bool Board::has_black_piece(int x, int y)
+{
+  Piece* p = black_pieces[(Position(x, y))];
+  if (p == 0) return false;
+  return true;
+}
+
+bool Board::has_white_piece(int x, int y)
+{
+  Piece* p = white_pieces[(Position(x, y))];
+  if (p == 0) return false;
+  return true;
+}
+
 void Board::print_possible_moves(const std::vector<std::array<int, 2>>& moves) {
   std::map<int, char>::iterator it;
   std::vector<std::array<int, 2>>::size_type length = moves.size();

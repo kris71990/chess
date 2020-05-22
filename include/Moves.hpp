@@ -7,59 +7,44 @@ namespace Possible_Moves {
   std::vector<std::array<int, 2>> pawn_moves(Board& board, int turn, int x, int y) 
   {
     std::vector<std::array<int, 2>> moves {};
-    if (turn % 2 == 0) {
+    if (turn % 2 == 0) { // white move
       if (!board.is_on_board(x - 1, y)) return moves;
-      std::map<Board::Position, Piece*>::iterator it_black_two;
-      std::map<Board::Position, Piece*>::iterator it_black_one;
-      std::map<Board::Position, Piece*>::iterator it_black_left;
-      std::map<Board::Position, Piece*>::iterator it_black_right;
 
-      it_black_left = board.black_pieces.find(Board::Position(x - 1, y - 1));
-      it_black_right = board.black_pieces.find(Board::Position(x - 1, y + 1));
-      if (it_black_left != board.black_pieces.end()) moves.push_back({ x - 1, y - 1});
-      if (it_black_right != board.black_pieces.end()) moves.push_back({ x - 1, y + 1});
+      // capture moves
+      if (board.has_black_piece(x - 1, y - 1)) moves.push_back({ x - 1, y - 1});
+      if (board.has_black_piece(x - 1, y + 1)) moves.push_back({ x - 1, y + 1});
+
+      // if any piece is directly in front
+      if (!board.is_unoccupied(x - 1, y)) return moves;
   
+      // if on starting row, can move up two
       if (x == 6) {
-        it_black_two = board.black_pieces.find(Board::Position(x - 2, y));
-        it_black_one = board.black_pieces.find(Board::Position(x - 1, y));
-        if (it_black_one != board.black_pieces.end()) return moves;
-
-        if (it_black_two != board.black_pieces.end()) {
-          moves.push_back({ x - 1, y });
-        } else {
+        if (board.is_unoccupied(x - 2, y)) {
           moves.push_back({ x - 2, y });
           moves.push_back({ x - 1, y });
+        } else {
+          moves.push_back({ x - 1, y });
         }
-      } else {
-        it_black_one = board.black_pieces.find(Board::Position(x - 1, y));
-        if (it_black_one == board.black_pieces.end()) moves.push_back({ x - 1, y });
+      } else { // else, move up one
+        moves.push_back({ x - 1, y });
       }
-    } else {
+    } else { // black move
       if (!board.is_on_board(x + 1, y)) return moves;
-      std::map<Board::Position, Piece*>::iterator it_white_two;
-      std::map<Board::Position, Piece*>::iterator it_white_one;
-      std::map<Board::Position, Piece*>::iterator it_white_left;
-      std::map<Board::Position, Piece*>::iterator it_white_right;
 
-      it_white_left = board.white_pieces.find(Board::Position(x + 1, y - 1));
-      it_white_right = board.white_pieces.find(Board::Position(x + 1, y + 1));
-      if (it_white_left != board.white_pieces.end()) moves.push_back({ x + 1, y - 1});
-      if (it_white_right != board.white_pieces.end()) moves.push_back({ x + 1, y + 1});
+      if (board.has_white_piece(x + 1, y - 1)) moves.push_back({ x + 1, y - 1});
+      if (board.has_white_piece(x + 1, y + 1)) moves.push_back({ x + 1, y + 1});
+
+      if (!board.is_unoccupied(x + 1, y)) return moves;
 
       if (x == 1) {
-        it_white_two = board.white_pieces.find(Board::Position(x + 2, y));
-        it_white_one = board.white_pieces.find(Board::Position(x + 1, y));
-        if (it_white_one != board.white_pieces.end()) return moves;
-
-        if (it_white_two != board.white_pieces.end()) {
+       if (board.is_unoccupied(x + 2, y)) {
+          moves.push_back({ x + 2, y });
           moves.push_back({ x + 1, y });
         } else {
           moves.push_back({ x + 1, y });
-          moves.push_back({ x + 2, y });
         }
       } else {
-        it_white_one = board.white_pieces.find(Board::Position(x + 1, y));
-        if (it_white_one == board.white_pieces.end()) moves.push_back({ x + 1, y });
+        moves.push_back({ x + 1, y });
       }
     }
     return moves;
