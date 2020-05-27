@@ -116,18 +116,18 @@ std::map<std::string, std::string> Game_Info::print_move_prompt(Board& board, Ga
 
   if (hasEnding(spaceFrom, "-h") || hasEnding(spaceFrom, "-hx")) {
     std::string square_substr = spaceFrom.substr(0,2);
-    move["spaceFrom"] = square_substr;
+    move.insert(std::pair<std::string, std::string>("spaceFrom", square_substr));
   } else {
-    move["spaceFrom"] = spaceFrom;
+    move.insert(std::pair<std::string, std::string>("spaceFrom", spaceFrom));
   }
 
   if (hasEnding(spaceTo, "-hx") || hasEnding(spaceTo, "-h")) {
     std::string square_substr = spaceTo.substr(0,2);
-    move["spaceTo"] = square_substr;
+    move.insert(std::pair<std::string, std::string>("spaceTo", square_substr));
   } else {
-    move["spaceTo"] = spaceTo;
+    move.insert(std::pair<std::string, std::string>("spaceTo", spaceTo));
   }
 
-  move["color"] = color;
+  move.insert(std::pair<std::string, std::string>("color", color));
   return move;
 }
