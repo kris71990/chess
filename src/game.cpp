@@ -121,16 +121,16 @@ bool move_piece(Board& board, Game_Info::State& game_state)
 
     // call board.is_check(board_char, turn, xTo, yTo)
     // if (check) call board.is_checkmate()
-    // std::vector<int> king_location = board.is_check(board_char, game_state.turn, xTo, yTo);
-    // std::string check_status {};
-    // if (!king_location.empty()) {
-    //   if (board.is_checkmate(king_location[0], king_location[1], game_state.turn)) {
-    //     check_status = "-- Checkmate";
-    //     game_state.game_end = true;
-    //   } else {
-    //     check_status = "-- Check";
-    //   }
-    // }
+    std::vector<int> king_location = board.is_check(board_char, game_state.turn, xTo, yTo);
+    std::string check_status {};
+    if (!king_location.empty()) {
+      if (board.is_checkmate(king_location[0], king_location[1], game_state.turn)) {
+        check_status = " -- Checkmate";
+        game_state.game_end = true;
+      } else {
+        check_status = " -- Check";
+      }
+    }
 
     board.board[xFrom][yFrom] = " ";
 
@@ -140,17 +140,17 @@ bool move_piece(Board& board, Game_Info::State& game_state)
       current_move["color"] + ": " + moved_piece[0] + " from " + 
       board.grid_translator_to_letter[yFrom] + std::to_string(8 - xFrom) + " to " + 
       board.grid_translator_to_letter[yTo] + std::to_string(8 - xTo) + 
-      (capture_string == "" ? "" : capture_string);
-      // (check_status == "" ? "" : check_status);
+      (capture_string == "" ? "" : capture_string) +
+      (check_status == "" ? "" : check_status);
     std::cout << move_str + "\n";
     
     ++game_state.turn;
     game_state.log.push_back(move_str);
 
-    // if (game_state.game_end) {
-    //   std::cout << current_move["color"] << " won in " << game_state.turn << " moves.\n";
-    //   std::cout << "Good game.\n";
-    // }
+    if (game_state.game_end) {
+      std::cout << current_move["color"] << " won in " << game_state.turn << " moves.\n";
+      std::cout << "Good game.\n";
+    }
   } else {
     std::cout << "\nInvalid Move\n";
   }
@@ -160,9 +160,6 @@ bool move_piece(Board& board, Game_Info::State& game_state)
 int main() 
 {
   Game_Info::State game_state { false, 0 };
-
-  std::cout << "FUCK ME";
-  
   Game_Info::print_initial_prompt(game_state);
   Board board;
 
