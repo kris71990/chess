@@ -9,7 +9,7 @@
 
 std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo, int yTo) 
 {
-  std::vector<std::string> validated_move;
+  std::vector<std::string> validated_move {};
   if (!Board::is_on_board(xTo, yTo)) return validated_move;
 
   std::map<Board::Position, Piece*>::iterator it_from;
@@ -77,7 +77,7 @@ std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yF
 
 bool move_piece(Board& board, Game_Info::State& game_state) 
 {
-  std::map<std::string, std::string> current_move;
+  std::map<std::string, std::string> current_move {};
   while (current_move.empty()) {
     current_move = Game_Info::print_move_prompt(board, game_state);
     if (game_state.game_end == true) return false;
@@ -93,7 +93,7 @@ bool move_piece(Board& board, Game_Info::State& game_state)
 
   if (!moved_piece.empty()) {
     std::map<Board::Position, Piece*>::iterator it;
-    std::string board_char;
+    std::string board_char {};
 
     if (game_state.turn % 2 == 0) {
       /* updating pointer map flow */
