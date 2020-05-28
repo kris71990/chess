@@ -14,8 +14,8 @@ void Game_Info::set_last_piece_possible_moves(std::map<int, std::pair<int, int>>
   last_piece_possible_moves = previous_piece;
 }
 
-void Game_Info::set_last_piece(std::string piece) last_piece = piece;
-std::string Game_Info::get_last_piece() return last_piece;
+void Game_Info::set_last_piece(std::string piece) { last_piece = piece; }
+std::string Game_Info::get_last_piece() { return last_piece; }
 
 void Game_Info::print_game_log() 
 {

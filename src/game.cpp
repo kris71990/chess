@@ -147,7 +147,7 @@ bool move_piece(Board& board)
 
     std::map<int, std::pair<int, int>> last_piece_possible_moves {};
     int counter = 0;
-    for (auto move : next_moves) {
+    for (auto move : check_moves) {
       ++counter;
       last_piece_possible_moves.insert({ counter, move });
     }
