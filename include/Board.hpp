@@ -44,9 +44,10 @@ public:
   bool is_unoccupied(int x, int y) const { return board[x][y] == " " ? true : false; }
   bool has_white_piece(int x, int y);
   bool has_black_piece(int x, int y);
+  std::pair<int, int> find_king(char color);
 
   std::map<int, std::pair<int, int>> is_check(std::string board_char, int turn, int x, int y);
-  bool is_checkmate(std::map<int, std::pair<int, int>> next_moves, int turn);
+  bool is_checkmate(int turn);
 
   std::map<int, char> grid_translator_to_letter = 
     {

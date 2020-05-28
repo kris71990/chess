@@ -12,7 +12,7 @@ namespace Possible_Moves {
   std::map<int, std::pair<int, int>> rook_moves(Board& board, int turn, int x, int y);
   std::map<int, std::pair<int, int>> queen_moves(Board& board, int turn, int x, int y);
   std::map<int, std::pair<int, int>> knight_moves(Board& board, int turn, int x, int y);
-  std::map<int, std::pair<int, int>> king_moves(Board& board, int turn, int x, int y, std::map<int, std::pair<int, int>> opponent_next_move);
+  std::map<int, std::pair<int, int>> king_moves(Board& board, int turn, int x, int y);
 }
 
 #endif

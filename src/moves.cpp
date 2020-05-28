@@ -46,10 +46,11 @@ std::map<int, std::pair<int, int>> Possible_Moves::pawn_moves(Board& board, int 
   return moves;
 }
 
-std::map<int, std::pair<int, int>> Possible_Moves::king_moves(Board& board, int turn, int x, int y, std::map<int, std::pair<int, int>> opponent_next_move)
+std::map<int, std::pair<int, int>> Possible_Moves::king_moves(Board& board, int turn, int x, int y)
 {
   std::map<int, std::pair<int, int>> moves {};
   std::map<int, std::pair<int, int>>::iterator it;
+  std::map<int, std::pair<int, int>> last_piece_possible_moves = board.get_last_piece_possible_moves();
 
   int count { 0 }; 
   int count1 { 0 };
