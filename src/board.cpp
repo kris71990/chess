@@ -87,16 +87,16 @@ bool Board::has_white_piece(int x, int y)
   return false;
 }
 
-void Board::print_possible_moves(const std::vector<std::array<int, 2>>& moves) {
+void Board::print_possible_moves(const std::vector<std::pair<int, int>>& moves) {
   std::map<int, char>::iterator it;
   std::vector<std::array<int, 2>>::size_type length = moves.size();
   int counter { 0 };
   std::cout << "\nPossible moves: ";
 
-  for (const std::array<int, 2>& move : moves) {
+  for (const std::pair<int, int>& move : moves) {
     ++counter;
-    it = Board::grid_translator_to_letter.find(move[1]);
-    int invertedY = 8 - move[0];
+    it = Board::grid_translator_to_letter.find(move.second);
+    int invertedY = 8 - move.first;
     std::cout << it -> second << invertedY << (length == counter ? "\n" : ", ");
   }
   std::cout << "\n";
@@ -138,9 +138,9 @@ std::vector<std::vector<int>> Board::parse_move_input(std::map<std::string, std:
   return parsed_move;
 }
 
-std::vector<int> Board::is_check(std::string board_char, int turn, int x, int y) {
+std::vector<std::pair<int, int>> Board::is_check(std::string board_char, int turn, int x, int y) {
   // call possible_moves function for piece type (board_char) from x,y
-  std::vector<std::array<int, 2>> moves;
+  std::vector<std::pair<int, int>> moves;
   if (board_char == "P") {
     moves = Possible_Moves::pawn_moves(*this, turn, x, y);
   } else if (board_char == "Kn") {
@@ -151,8 +151,6 @@ std::vector<int> Board::is_check(std::string board_char, int turn, int x, int y)
     moves = Possible_Moves::rook_moves(*this, turn, x, y);
   } else if (board_char == "Q") {
     moves = Possible_Moves::queen_moves(*this, turn, x, y);
-  } else if (board_char == "K") {
-    moves = Possible_Moves::king_moves(*this, turn, x, y);
   }
 
   // find where location of king is in opposing piece map
@@ -173,15 +171,21 @@ std::vector<int> Board::is_check(std::string board_char, int turn, int x, int y)
     });
   }
 
-  // if location of king is in possible_moves vector, return true
+  // if location of king is in possible_moves vector, return location of king and possible moves vector
   for (auto move : moves) {
-    if (xKing == move[0] && yKing == move[1]) return std::vector<int> { move[0], move[1] };
+    if (xKing == move.first && yKing == move.second) {
+      moves.push_back(std::make_pair(xKing, yKing));
+      return moves;
+    }
   }
-  return std::vector<int> {};
+  return std::vector<std::pair<int, int>> {};
 }
 
-bool Board::is_checkmate(int kingX, int kingY, int turn) {
-  std::vector<std::array<int, 2>> moves = Possible_Moves::king_moves(*this, kingX, kingY, turn);
+bool Board::is_checkmate(std::vector<std::pair<int, int>> next_moves, int turn) {
+  int king_index = next_moves.size() - 1;
+  std::pair<int, int> king_location = next_moves[king_index];
+
+  std::vector<std::pair<int, int>> moves = Possible_Moves::king_moves(*this, king_location.first, king_location.second, turn, next_moves);
   if (moves.empty()) return true;
   return false;
 }

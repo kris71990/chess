@@ -33,7 +33,7 @@ public:
   std::map<Position, Piece*> black_pieces {};
   
   void draw_board();
-  void print_possible_moves(const std::vector<std::array<int, 2>>& moves);
+  void print_possible_moves(const std::vector<std::pair<int, int>>& moves);
 
   std::string get_piece_from_coordinates(std::string coordinates);
   std::vector<std::vector<int>> parse_move_input(std::map<std::string, std::string>& move);
@@ -43,8 +43,8 @@ public:
   bool has_white_piece(int x, int y);
   bool has_black_piece(int x, int y);
 
-  std::vector<int> is_check(std::string board_char, int turn, int x, int y);
-  bool is_checkmate(int kingX, int kingY, int turn);
+  std::vector<std::pair<int, int>> is_check(std::string board_char, int turn, int x, int y);
+  bool is_checkmate(std::vector<std::pair<int, int>> next_moves, int turn);
 
   std::map<int, char> grid_translator_to_letter = 
     {

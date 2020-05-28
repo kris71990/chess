@@ -1,8 +1,8 @@
 #include "../include/Moves.hpp"
 
-std::vector<std::array<int, 2>> Possible_Moves::pawn_moves(Board& board, int turn, int x, int y) 
+std::vector<std::pair<int, int>> Possible_Moves::pawn_moves(Board& board, int turn, int x, int y) 
 {
-  std::vector<std::array<int, 2>> moves {};
+  std::vector<std::pair<int, int>> moves {};
   if (turn % 2 == 0) { // white move
     if (!board.is_on_board(x - 1, y)) return moves;
 
@@ -46,9 +46,11 @@ std::vector<std::array<int, 2>> Possible_Moves::pawn_moves(Board& board, int tur
   return moves;
 }
 
-std::vector<std::array<int, 2>> Possible_Moves::king_moves(Board& board, int turn, int x, int y)
+std::vector<std::pair<int, int>> Possible_Moves::king_moves(Board& board, int turn, int x, int y, std::vector<std::pair<int, int>> opponent_next_move)
 {
-  std::vector<std::array<int, 2>> moves {};
+  std::vector<std::pair<int, int>> moves {};
+  std::vector<std::pair<int, int>>::iterator it;
+
   int count { 0 }; 
   int count1 { 0 };
   int count2 { -1 };
@@ -57,21 +59,45 @@ std::vector<std::array<int, 2>> Possible_Moves::king_moves(Board& board, int tur
     switch (i % 3) {
       case 0: { 
         if (board.is_on_board(x - 1, y - 1 + count) && board.is_unoccupied(x - 1, y - 1 + count)) {
-          moves.push_back({ x - 1, y - 1 + count });
+          if (!opponent_next_move.empty()) {
+            std::for_each(opponent_next_move.begin(), opponent_next_move.end(), [&](const auto entry) {
+              if (entry.first != x - 1 && entry.second != y - 1 + count) {
+                moves.push_back({ x - 1, y - 1 + count });
+              }
+            });
+          } else {
+            moves.push_back({ x - 1, y - 1 + count });
+          }
         }
         ++count;
         break;
       }
       case 1: {
         if (board.is_on_board(x + 1, y - 1 + count1) && board.is_unoccupied(x + 1, y - 1 + count1)) {
-          moves.push_back({ x + 1, y - 1 + count1 });
+          if (!opponent_next_move.empty()) {
+            std::for_each(opponent_next_move.begin(), opponent_next_move.end(), [&](const auto entry) {
+              if (entry.first != x + 1 && entry.second != y - 1 + count1) {
+                moves.push_back({ x + 1, y - 1 + count1 });
+              }
+            });
+          } else {
+            moves.push_back({ x + 1, y - 1 + count1 });
+          }
         }
         ++count1;
         break;
       }
       default: {
         if (board.is_on_board(x, y + count2) && board.is_unoccupied(x, y + count2)) {
-          moves.push_back({ x, y + count2 });
+          if (!opponent_next_move.empty()) {
+            std::for_each(opponent_next_move.begin(), opponent_next_move.end(), [&](const auto entry) {
+              if (entry.first != x && entry.second != y + count2) {
+                moves.push_back({ x, y + count2 });
+              }
+            });
+          } else {
+            moves.push_back({ x, y + count2 });
+          }
         }
         count2 = 1;
         break;
@@ -81,9 +107,9 @@ std::vector<std::array<int, 2>> Possible_Moves::king_moves(Board& board, int tur
   return moves;
 }
 
-std::vector<std::array<int, 2>> Possible_Moves::bishop_moves(Board& board, int turn, int x, int y) 
+std::vector<std::pair<int, int>> Possible_Moves::bishop_moves(Board& board, int turn, int x, int y) 
 {
-  std::vector<std::array<int, 2>> moves {};
+  std::vector<std::pair<int, int>> moves {};
   bool piece_disruption1 { false };
   bool piece_disruption2 { false };
   bool piece_disruption3 { false };
@@ -124,9 +150,9 @@ std::vector<std::array<int, 2>> Possible_Moves::bishop_moves(Board& board, int t
   return moves;
 }
 
-std::vector<std::array<int, 2>> Possible_Moves::rook_moves(Board& board, int turn, int x, int y) 
+std::vector<std::pair<int, int>> Possible_Moves::rook_moves(Board& board, int turn, int x, int y) 
 {
-  std::vector<std::array<int, 2>> moves {};
+  std::vector<std::pair<int, int>> moves {};
   bool piece_disruption1 { false };
   bool piece_disruption2 { false };
   bool piece_disruption3 { false };
@@ -167,22 +193,22 @@ std::vector<std::array<int, 2>> Possible_Moves::rook_moves(Board& board, int tur
   return moves;
 }
 
-std::vector<std::array<int, 2>> Possible_Moves::queen_moves(Board& board, int turn, int x, int y) 
+std::vector<std::pair<int, int>> Possible_Moves::queen_moves(Board& board, int turn, int x, int y) 
 {
   // same as both rook and bishop
-  std::vector<std::array<int, 2>> rooks = rook_moves(board, turn, x, y);
-  std::vector<std::array<int, 2>> bishops = bishop_moves(board, turn, x, y);
+  std::vector<std::pair<int, int>> rooks = rook_moves(board, turn, x, y);
+  std::vector<std::pair<int, int>> bishops = bishop_moves(board, turn, x, y);
 
-  std::vector<std::array<int, 2>> moves {};
+  std::vector<std::pair<int, int>> moves {};
   moves.reserve(rooks.size() + bishops.size());
   moves.insert(moves.end(), rooks.begin(), rooks.end());
   moves.insert(moves.end(), bishops.begin(), bishops.end());
   return moves;
 }
 
-std::vector<std::array<int, 2>> Possible_Moves::knight_moves(Board& board, int turn, int x, int y) 
+std::vector<std::pair<int, int>> Possible_Moves::knight_moves(Board& board, int turn, int x, int y) 
 {
-  std::vector<std::array<int, 2>> moves {};
+  std::vector<std::pair<int, int>> moves {};
 
   if (board.is_on_board(x - 1, y - 2)) {
     if (turn == 2 && !board.has_white_piece(x - 1, y - 2)) moves.push_back({ x - 1, y - 2 });

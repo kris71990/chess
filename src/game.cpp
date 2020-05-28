@@ -75,11 +75,11 @@ std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yF
   return validated_move;
 }
 
-bool move_piece(Board& board, Game_Info::State& game_state) 
+bool move_piece(Board& board, Game_Info& game_state) 
 {
   std::map<std::string, std::string> current_move {};
   while (current_move.empty()) {
-    current_move = Game_Info::print_move_prompt(board, game_state);
+    current_move = game_state.print_move_prompt(board);
     if (game_state.game_end == true) return false;
   }
 
@@ -121,10 +121,10 @@ bool move_piece(Board& board, Game_Info::State& game_state)
 
     // call board.is_check(board_char, turn, xTo, yTo)
     // if (check) call board.is_checkmate()
-    std::vector<int> king_location = board.is_check(board_char, game_state.turn, xTo, yTo);
+    std::vector<std::pair<int, int>> next_moves = board.is_check(board_char, game_state.turn, xTo, yTo);
     std::string check_status {};
-    if (!king_location.empty()) {
-      if (board.is_checkmate(king_location[0], king_location[1], game_state.turn)) {
+    if (!next_moves.empty()) {
+      if (board.is_checkmate(next_moves, game_state.turn)) {
         check_status = " -- Checkmate";
         game_state.game_end = true;
       } else {
@@ -145,7 +145,8 @@ bool move_piece(Board& board, Game_Info::State& game_state)
     std::cout << move_str + "\n";
     
     ++game_state.turn;
-    game_state.log.push_back(move_str);
+    game_state.set_previous_piece(std::make_pair(moved_piece[0], next_moves));
+    game_state.log_visible.push_back(move_str);
 
     if (game_state.game_end) {
       std::cout << current_move["color"] << " won in " << game_state.turn << " moves.\n";
@@ -159,8 +160,8 @@ bool move_piece(Board& board, Game_Info::State& game_state)
 
 int main() 
 {
-  Game_Info::State game_state { false, 0 };
-  Game_Info::print_initial_prompt(game_state);
+  Game_Info game_state;
+  game_state.print_initial_prompt();
   Board board;
 
   while (game_state.game_end == false) {
