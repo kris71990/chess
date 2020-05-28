@@ -6,13 +6,16 @@
 #include "../include/Board.hpp"
 #include "../include/Moves.hpp"
 
-std::pair<std::string, std::vector<std::pair<int, int>>> Game_Info::get_previous_piece() {
-  return last_piece;
+std::map<int, std::pair<int, int>> Game_Info::get_last_piece_possible_moves() {
+  return last_piece_possible_moves;
 }
 
-void Game_Info::set_previous_piece(std::pair<std::string, std::vector<std::pair<int, int>>> previous_piece) {
-  last_piece = previous_piece;
+void Game_Info::set_last_piece_possible_moves(std::map<int, std::pair<int, int>> previous_piece) {
+  last_piece_possible_moves = previous_piece;
 }
+
+void Game_Info::set_last_piece(std::string piece) last_piece = piece;
+std::string Game_Info::get_last_piece() return last_piece;
 
 void Game_Info::print_game_log() 
 {

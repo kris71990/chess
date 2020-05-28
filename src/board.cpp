@@ -277,11 +277,11 @@ std::vector<std::pair<int, int>> Board::is_check(std::string board_char, int tur
   return std::vector<std::pair<int, int>> {};
 }
 
-bool Board::is_checkmate(std::vector<std::pair<int, int>> next_moves, int turn) {
-  int king_index = next_moves.size() - 1;
-  std::pair<int, int> king_location = next_moves[king_index];
+bool Board::is_checkmate(std::vector<std::pair<int, int>> check_moves, int turn) {
+  int king_index = check_moves.size() - 1;
+  std::pair<int, int> king_location = check_moves[king_index];
 
-  std::vector<std::pair<int, int>> moves = Possible_Moves::king_moves(*this, king_location.first, king_location.second, turn, next_moves);
+  std::vector<std::pair<int, int>> moves = Possible_Moves::king_moves(*this, king_location.first, king_location.second, turn, check_moves);
   if (moves.empty()) return true;
   return false;
 }

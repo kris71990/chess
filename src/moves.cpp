@@ -59,51 +59,31 @@ std::vector<std::pair<int, int>> Possible_Moves::king_moves(Board& board, int tu
     switch (i % 3) {
       case 0: { 
         if (board.is_on_board(x - 1, y - 1 + count) && board.is_unoccupied(x - 1, y - 1 + count)) {
-          if (!opponent_next_move.empty()) {
-            std::for_each(opponent_next_move.begin(), opponent_next_move.end(), [&](const auto entry) {
-              if (entry.first != x - 1 && entry.second != y - 1 + count) {
-                moves.push_back({ x - 1, y - 1 + count });
-              }
-            });
-          } else {
-            moves.push_back({ x - 1, y - 1 + count });
-          }
+          moves.push_back({ x - 1, y - 1 + count });
         }
         ++count;
         break;
       }
       case 1: {
         if (board.is_on_board(x + 1, y - 1 + count1) && board.is_unoccupied(x + 1, y - 1 + count1)) {
-          if (!opponent_next_move.empty()) {
-            std::for_each(opponent_next_move.begin(), opponent_next_move.end(), [&](const auto entry) {
-              if (entry.first != x + 1 && entry.second != y - 1 + count1) {
-                moves.push_back({ x + 1, y - 1 + count1 });
-              }
-            });
-          } else {
-            moves.push_back({ x + 1, y - 1 + count1 });
-          }
+          moves.push_back({ x + 1, y - 1 + count1 });
         }
         ++count1;
         break;
       }
       default: {
         if (board.is_on_board(x, y + count2) && board.is_unoccupied(x, y + count2)) {
-          if (!opponent_next_move.empty()) {
-            std::for_each(opponent_next_move.begin(), opponent_next_move.end(), [&](const auto entry) {
-              if (entry.first != x && entry.second != y + count2) {
-                moves.push_back({ x, y + count2 });
-              }
-            });
-          } else {
-            moves.push_back({ x, y + count2 });
-          }
+          moves.push_back({ x, y + count2 });
         }
         count2 = 1;
         break;
       }
     }
   }
+
+  // for (auto move : moves) {
+  //   it = opponent_next_move.find(move.first, move.second);
+  // }
   return moves;
 }
 
