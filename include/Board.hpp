@@ -6,6 +6,7 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include "Game_Info.hpp"
 #include "King.hpp"
 #include "Pawn.hpp"
 #include "Rook.hpp"
@@ -13,7 +14,7 @@
 #include "Knight.hpp"
 #include "Queen.hpp"
 
-class Board {
+class Board : public Game_Info {
 public:
   Board();
 
@@ -36,6 +37,7 @@ public:
   void print_possible_moves(const std::vector<std::pair<int, int>>& moves);
 
   std::string get_piece_from_coordinates(std::string coordinates);
+  std::map<std::string, std::string> print_move_prompt() override;
   std::vector<std::vector<int>> parse_move_input(std::map<std::string, std::string>& move);
 
   static bool is_on_board(int x, int y) { return ((x < 8 && x >= 0) && (y < 8 && y >= 0)) ? true : false; }

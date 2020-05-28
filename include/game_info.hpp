@@ -1,8 +1,6 @@
 #include <vector>
 #include <map>
 
-#include "Board.hpp"
-
 class Game_Info {
 public:
   Game_Info() : game_end { false }, help { false }, turn { 0 }, log_visible {}, last_piece {} {};
@@ -16,7 +14,7 @@ public:
   void print_help_menu();
   void print_initial_prompt();
 
-  std::map<std::string, std::string> print_move_prompt(Board& board);
+  virtual std::map<std::string, std::string> print_move_prompt() = 0;
   std::map<std::string, int> parse_current_move(std::map<std::string, std::string>& current_move);
 
   std::pair<std::string, std::vector<std::pair<int, int>>> get_previous_piece();

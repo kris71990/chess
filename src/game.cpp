@@ -3,11 +3,10 @@
 #include <array>
 #include <vector>
 
-#include "../include/Game_Info.hpp"
 #include "../include/Board.hpp"
 #include "../include/Piece.hpp"
 
-std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yFrom, int xTo, int yTo) 
+std::vector<std::string> is_valid_move(Board& board, int xFrom, int yFrom, int xTo, int yTo) 
 {
   std::vector<std::string> validated_move {};
   if (!Board::is_on_board(xTo, yTo)) return validated_move;
@@ -16,7 +15,7 @@ std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yF
   std::vector<std::array<int, 2>> possible_moves;
   bool is_occupied { false };
 
-  if (turn % 2 == 0) {
+  if (board.turn % 2 == 0) {
     std::map<Board::Position, Piece*>::iterator it_to_white;
     // check if white piece on destination
     it_to_white = board.white_pieces.find(Board::Position(xTo, yTo));
@@ -30,7 +29,7 @@ std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yF
       std::string piece_type { it_from -> second -> get_type() };
       if (it_to_black != board.black_pieces.end()) is_occupied = true;
 
-      if (it_from -> second -> validate_move(board.board, turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
+      if (it_from -> second -> validate_move(board.board, board.turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
         validated_move.push_back(piece_type);
         if (is_occupied) {
           validated_move.push_back(it_to_black -> second -> get_type());
@@ -58,7 +57,7 @@ std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yF
       std::string piece_type = it_from -> second -> get_type();
       if (it_to_white != board.white_pieces.end()) is_occupied = true;
 
-      if (it_from -> second -> validate_move(board.board, turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
+      if (it_from -> second -> validate_move(board.board, board.turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
         validated_move.push_back(piece_type);
         if (is_occupied) {
           validated_move.push_back(it_to_white -> second -> get_type());
@@ -75,12 +74,12 @@ std::vector<std::string> is_valid_move(Board& board, int turn, int xFrom, int yF
   return validated_move;
 }
 
-bool move_piece(Board& board, Game_Info& game_state) 
+bool move_piece(Board& board) 
 {
   std::map<std::string, std::string> current_move {};
   while (current_move.empty()) {
-    current_move = game_state.print_move_prompt(board);
-    if (game_state.game_end == true) return false;
+    current_move = board.print_move_prompt();
+    if (board.game_end == true) return false;
   }
 
   std::vector<std::vector<int>> move_coordinates = board.parse_move_input(current_move);
@@ -89,13 +88,13 @@ bool move_piece(Board& board, Game_Info& game_state)
   int xTo { move_coordinates[1][0] };
   int yTo { move_coordinates[1][1] };
 
-  std::vector<std::string> moved_piece = is_valid_move(board, game_state.turn, xFrom, yFrom, xTo, yTo);
+  std::vector<std::string> moved_piece = is_valid_move(board, xFrom, yFrom, xTo, yTo);
 
   if (!moved_piece.empty()) {
     std::map<Board::Position, Piece*>::iterator it;
     std::string board_char {};
 
-    if (game_state.turn % 2 == 0) {
+    if (board.turn % 2 == 0) {
       /* updating pointer map flow */
 
       // 1. find pointer to piece being moved
@@ -121,12 +120,12 @@ bool move_piece(Board& board, Game_Info& game_state)
 
     // call board.is_check(board_char, turn, xTo, yTo)
     // if (check) call board.is_checkmate()
-    std::vector<std::pair<int, int>> next_moves = board.is_check(board_char, game_state.turn, xTo, yTo);
+    std::vector<std::pair<int, int>> next_moves = board.is_check(board_char, board.turn, xTo, yTo);
     std::string check_status {};
     if (!next_moves.empty()) {
-      if (board.is_checkmate(next_moves, game_state.turn)) {
+      if (board.is_checkmate(next_moves, board.turn)) {
         check_status = " -- Checkmate";
-        game_state.game_end = true;
+        board.game_end = true;
       } else {
         check_status = " -- Check";
       }
@@ -144,12 +143,12 @@ bool move_piece(Board& board, Game_Info& game_state)
       (check_status == "" ? "" : check_status);
     std::cout << move_str + "\n";
     
-    ++game_state.turn;
-    game_state.set_previous_piece(std::make_pair(moved_piece[0], next_moves));
-    game_state.log_visible.push_back(move_str);
+    ++board.turn;
+    board.set_previous_piece(std::make_pair(moved_piece[0], next_moves));
+    board.log_visible.push_back(move_str);
 
-    if (game_state.game_end) {
-      std::cout << current_move["color"] << " won in " << game_state.turn << " moves.\n";
+    if (board.game_end) {
+      std::cout << current_move["color"] << " won in " << board.turn << " moves.\n";
       std::cout << "Good game.\n";
     }
   } else {
@@ -160,13 +159,13 @@ bool move_piece(Board& board, Game_Info& game_state)
 
 int main() 
 {
-  Game_Info game_state;
-  game_state.print_initial_prompt();
+  // Game_Info game_state;
   Board board;
+  board.print_initial_prompt();
 
-  while (game_state.game_end == false) {
+  while (board.game_end == false) {
     board.draw_board();
-    move_piece(board, game_state);
+    move_piece(board);
   }
   return 0;
 }
