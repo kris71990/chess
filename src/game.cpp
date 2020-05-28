@@ -120,7 +120,7 @@ bool move_piece(Board& board)
 
     // call board.is_check(board_char, turn, xTo, yTo)
     // if (check) call board.is_checkmate()
-    std::vector<std::pair<int, int>> check_moves = board.is_check(board_char, board.turn, xTo, yTo);
+    std::map<int, std::pair<int, int>> check_moves = board.is_check(board_char, board.turn, xTo, yTo);
     std::string check_status {};
     if (!check_moves.empty()) {
       if (board.is_checkmate(check_moves, board.turn)) {
@@ -145,12 +145,12 @@ bool move_piece(Board& board)
     
     ++board.turn;
 
-    std::map<int, std::pair<int, int>> last_piece_possible_moves {};
-    int counter = 0;
-    for (auto move : check_moves) {
-      ++counter;
-      last_piece_possible_moves.insert({ counter, move });
-    }
+    std::map<int, std::pair<int, int>> last_piece_possible_moves { check_moves };
+    // int counter = 0;
+    // for (auto move : check_moves) {
+    //   ++counter;
+    //   last_piece_possible_moves.insert({ counter, move });
+    // }
 
     board.set_last_piece(board_char);
     board.set_last_piece_possible_moves(last_piece_possible_moves);

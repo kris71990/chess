@@ -34,7 +34,7 @@ public:
   std::map<Position, Piece*> black_pieces {};
   
   void draw_board();
-  void print_possible_moves(const std::vector<std::pair<int, int>>& moves);
+  void print_possible_moves(std::map<int, std::pair<int, int>> moves);
 
   std::string get_piece_from_coordinates(std::string coordinates);
   std::map<std::string, std::string> print_move_prompt() override;
@@ -45,8 +45,8 @@ public:
   bool has_white_piece(int x, int y);
   bool has_black_piece(int x, int y);
 
-  std::vector<std::pair<int, int>> is_check(std::string board_char, int turn, int x, int y);
-  bool is_checkmate(std::vector<std::pair<int, int>> next_moves, int turn);
+  std::map<int, std::pair<int, int>> is_check(std::string board_char, int turn, int x, int y);
+  bool is_checkmate(std::map<int, std::pair<int, int>> next_moves, int turn);
 
   std::map<int, char> grid_translator_to_letter = 
     {
