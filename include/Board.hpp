@@ -46,8 +46,9 @@ public:
   bool has_black_piece(int x, int y);
   std::pair<int, int> find_king(char color);
 
-  std::map<int, std::pair<int, int>> is_check(std::string board_char, int turn, int x, int y);
-  bool is_checkmate(int turn);
+  std::map<int, std::pair<int, int>> next_possible_moves(std::string board_char, int x, int y);
+  bool is_check(std::map<int, std::pair<int, int>> next_moves);
+  bool is_checkmate();
 
   std::map<int, char> grid_translator_to_letter = 
     {

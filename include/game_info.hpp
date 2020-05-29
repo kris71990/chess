@@ -7,6 +7,7 @@ public:
 
   bool game_end;
   bool help;
+  bool checkmate;
   int turn;
   std::vector<std::string> log_visible;
 

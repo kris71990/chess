@@ -5,6 +5,7 @@
 
 #include "../include/Board.hpp"
 #include "../include/Piece.hpp"
+#include "../include/Moves.hpp"
 
 std::vector<std::string> is_valid_move(Board& board, int xFrom, int yFrom, int xTo, int yTo) 
 {
@@ -12,7 +13,6 @@ std::vector<std::string> is_valid_move(Board& board, int xFrom, int yFrom, int x
   if (!Board::is_on_board(xTo, yTo)) return validated_move;
 
   std::map<Board::Position, Piece*>::iterator it_from;
-  std::vector<std::array<int, 2>> possible_moves;
   bool is_occupied { false };
 
   if (board.turn % 2 == 0) {
@@ -29,15 +29,32 @@ std::vector<std::string> is_valid_move(Board& board, int xFrom, int yFrom, int x
       std::string piece_type { it_from -> second -> get_type() };
       if (it_to_black != board.black_pieces.end()) is_occupied = true;
 
-      if (it_from -> second -> validate_move(board.board, board.turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
-        validated_move.push_back(piece_type);
-        if (is_occupied) {
-          validated_move.push_back(it_to_black -> second -> get_type());
-          // piece has been captured, safely destroy pointer
-          delete it_to_black -> second; 
-          board.black_pieces.erase(it_to_black);
+      if (piece_type == "King") {
+        std::map<int, std::pair<int, int>> possible_moves = Possible_Moves::king_moves(board, xFrom, yFrom);
+        std::map<int, std::pair<int, int>>::iterator it_king;
+        for (it_king = possible_moves.begin(); it_king != possible_moves.end(); ++it_king) {
+          if (it_king -> second.first == xTo && it_king -> second.second == yTo) {
+            validated_move.push_back(piece_type);
+            if (is_occupied) {
+              validated_move.push_back(it_to_black -> second -> get_type());
+              // piece has been captured, safely destroy pointer
+              delete it_to_black -> second; 
+              board.black_pieces.erase(it_to_black);
+            }
+            return validated_move;  
+          }
         }
-        return validated_move;    
+      } else {
+        if (it_from -> second -> validate_move(board.board, board.turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
+          validated_move.push_back(piece_type);
+          if (is_occupied) {
+            validated_move.push_back(it_to_black -> second -> get_type());
+            // piece has been captured, safely destroy pointer
+            delete it_to_black -> second; 
+            board.black_pieces.erase(it_to_black);
+          }
+          return validated_move;    
+        }
       }
     } else {
       return validated_move;
@@ -57,15 +74,32 @@ std::vector<std::string> is_valid_move(Board& board, int xFrom, int yFrom, int x
       std::string piece_type = it_from -> second -> get_type();
       if (it_to_white != board.white_pieces.end()) is_occupied = true;
 
-      if (it_from -> second -> validate_move(board.board, board.turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
-        validated_move.push_back(piece_type);
-        if (is_occupied) {
-          validated_move.push_back(it_to_white -> second -> get_type());
-          // piece has been captured, safely destroy pointer
-          delete it_to_white -> second; 
-          board.white_pieces.erase(it_to_white);
+      if (piece_type == "King") {
+        std::map<int, std::pair<int, int>> possible_moves = Possible_Moves::king_moves(board, xFrom, yFrom);
+        std::map<int, std::pair<int, int>>::iterator it_king;
+        for (it_king = possible_moves.begin(); it_king != possible_moves.end(); ++it_king) {
+          if (it_king -> second.first == xTo && it_king -> second.second == yTo) {
+            validated_move.push_back(piece_type);
+            if (is_occupied) {
+              validated_move.push_back(it_to_white -> second -> get_type());
+              // piece has been captured, safely destroy pointer
+              delete it_to_white -> second; 
+              board.white_pieces.erase(it_to_white);
+            }
+            return validated_move;  
+          }
         }
-        return validated_move;    
+      } else {
+        if (it_from -> second -> validate_move(board.board, board.turn, is_occupied, it_from -> first.x, it_from -> first.y, xTo, yTo)) {
+          validated_move.push_back(piece_type);
+          if (is_occupied) {
+            validated_move.push_back(it_to_white -> second -> get_type());
+            // piece has been captured, safely destroy pointer
+            delete it_to_white -> second; 
+            board.white_pieces.erase(it_to_white);
+          }
+          return validated_move;    
+        }
       }
     } else {
       return validated_move;
@@ -76,6 +110,7 @@ std::vector<std::string> is_valid_move(Board& board, int xFrom, int yFrom, int x
 
 bool move_piece(Board& board) 
 {
+  if (board.game_end == true) return false;
   std::map<std::string, std::string> current_move {};
   while (current_move.empty()) {
     current_move = board.print_move_prompt();
@@ -120,16 +155,19 @@ bool move_piece(Board& board)
 
     // call board.is_check(board_char, turn, xTo, yTo)
     // if (check) call board.is_checkmate()
-    std::map<int, std::pair<int, int>> check_moves = board.is_check(board_char, board.turn, xTo, yTo);
+    std::map<int, std::pair<int, int>> next_moves = board.next_possible_moves(board_char, xTo, yTo);
+    board.set_last_piece(board_char);
+    board.set_last_piece_possible_moves(next_moves);
     std::string check_status {};
-    // if (!check_moves.empty()) {
-    //   if (board.is_checkmate(check_moves, board.turn)) {
-    //     check_status = " -- Checkmate";
-    //     board.game_end = true;
-    //   } else {
-    //     check_status = " -- Check";
-    //   }
-    // }
+
+    if (board.is_check(next_moves)) {
+      if (board.is_checkmate()) {
+        check_status = " -- Checkmate";
+        board.checkmate = true;
+      } else {
+        check_status = " -- Check";
+      }
+    }
 
     board.board[xFrom][yFrom] = " ";
 
@@ -144,16 +182,7 @@ bool move_piece(Board& board)
     std::cout << move_str + "\n";
     
     ++board.turn;
-
-    std::map<int, std::pair<int, int>> last_piece_possible_moves { check_moves };
-    board.set_last_piece(board_char);
-    board.set_last_piece_possible_moves(last_piece_possible_moves);
     board.log_visible.push_back(move_str);
-
-    if (board.game_end) {
-      std::cout << current_move["color"] << " won in " << board.turn << " moves.\n";
-      std::cout << "Good game.\n";
-    }
   } else {
     std::cout << "\nInvalid Move\n";
   }
@@ -162,7 +191,6 @@ bool move_piece(Board& board)
 
 int main() 
 {
-  // Game_Info game_state;
   Board board;
   board.print_initial_prompt();
 
