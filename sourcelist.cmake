@@ -1,6 +1,6 @@
 target_sources(chess PRIVATE
   src/moves.cpp
-  src/info.cpp 
+  src/game_info.cpp 
   src/board.cpp 
   src/pawn.cpp 
   src/knight.cpp 

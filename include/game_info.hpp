@@ -1,6 +1,9 @@
 #include <vector>
 #include <map>
 
+#ifndef GAME_INFO_H
+#define GAME_INFO_H
+
 class Game_Info {
 public:
   Game_Info() : game_end { false }, help { false }, turn { 0 }, log_visible {}, last_piece {}, last_piece_possible_moves {} {};
@@ -28,3 +31,5 @@ private:
   std::string last_piece;
   // std::vector<std::vector<std::string, std::map<int, int>>> log_raw;
 };
+
+#endif

@@ -3,7 +3,7 @@
 #include <string>
 #include <limits>
 
-#include "../include/Board.hpp"
+#include "../include/Game_Info.hpp"
 #include "../include/Moves.hpp"
 
 std::map<int, std::pair<int, int>> Game_Info::get_last_piece_possible_moves() {
