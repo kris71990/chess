@@ -38,30 +38,6 @@ public:
   std::map<int, Position> next_possible_moves(std::string board_char, int x, int y);
   bool is_check(const std::map<int, Position>& next_moves);
   bool is_checkmate();
-
-  std::map<int, char> grid_translator_to_letter = 
-    {
-      { 0, 'a' },
-      { 1, 'b' },
-      { 2, 'c' },
-      { 3, 'd' },
-      { 4, 'e' },
-      { 5, 'f' },
-      { 6, 'g' },
-      { 7, 'h' },
-    };
-
-  std::map<char, int> grid_translator_to_index =
-    {
-      { 'a', 0 },
-      { 'b', 1 },
-      { 'c', 2 },
-      { 'd', 3 },
-      { 'e', 4 },
-      { 'f', 5 },
-      { 'g', 6 },
-      { 'h', 7 },
-    };
 };
 
 #endif

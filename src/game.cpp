@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "../include/Board.hpp"
+#include "../include/Grid_Translator.hpp"
 #include "../include/Piece.hpp"
 #include "../include/Moves.hpp"
 
@@ -175,8 +176,8 @@ bool move_piece(Board& board)
     moved_piece.size() == 2 ? capture_string = " -- " + moved_piece[1] + " captured." : "";
     std::string move_str = 
       current_move["color"] + ": " + moved_piece[0] + " from " + 
-      board.grid_translator_to_letter[yFrom] + std::to_string(8 - xFrom) + " to " + 
-      board.grid_translator_to_letter[yTo] + std::to_string(8 - xTo) + 
+      Grid_Translator::to_letter.at(yFrom) + std::to_string(8 - xFrom) + " to " + 
+      Grid_Translator::to_letter.at(yTo) + std::to_string(8 - xTo) + 
       (capture_string == "" ? "" : capture_string) +
       (check_status == "" ? "" : check_status);
     std::cout << move_str + "\n";

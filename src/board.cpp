@@ -2,6 +2,7 @@
 #include <vector>
 
 #include "../include/Board.hpp"
+#include "../include/Grid_Translator.hpp"
 #include "../include/Moves.hpp"
 
 Board::Board()
@@ -123,7 +124,7 @@ std::map<std::string, std::string> Board::print_move_prompt() {
   if (help == true) {
     std::string square_substr { spaceFrom.substr(0,2) };
     int row { 8 - (square_substr[1] - '0') };
-    int column { grid_translator_to_index[square_substr[0]] };
+    int column { Grid_Translator::to_index.at(square_substr[0]) };
     std::string moving_piece { get_piece_from_coordinates(square_substr) };
     
     std::map<int, Position> moves;
@@ -209,16 +210,15 @@ std::pair<int, int> Board::find_king(char color)
 
 void Board::print_possible_moves(const std::map<int, Position>& moves) 
 {
-  std::map<int, char>::iterator it;
   std::map<int, Position>::size_type length = moves.size();
   int counter { 0 };
   std::cout << "\nPossible moves: ";
 
   for (auto move : moves) {
     ++counter;
-    it = grid_translator_to_letter.find(move.second.y);
+    char letter = Grid_Translator::to_letter.at(move.second.y);
     int invertedY = 8 - move.second.x;
-    std::cout << it -> second << invertedY << (length == counter ? "\n" : ", ");
+    std::cout << letter << invertedY << (length == counter ? "\n" : ", ");
   }
   std::cout << "\n";
 }
@@ -226,7 +226,7 @@ void Board::print_possible_moves(const std::map<int, Position>& moves)
 std::string Board::get_piece_from_coordinates(std::string square) {
   char letterFrom { square[0] };
   int numberFrom { square[1] - '0' };
-  std::string piece { board[8 - numberFrom][grid_translator_to_index[letterFrom]] };
+  std::string piece { board[8 - numberFrom][Grid_Translator::to_index.at(letterFrom)] };
   std::size_t pos { piece.find('m') };
   return piece.substr(pos + 1);
 }
