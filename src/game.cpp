@@ -12,28 +12,28 @@ std::vector<std::string> is_valid_move(Board& board, int xFrom, int yFrom, int x
   std::vector<std::string> validated_move {};
   if (!Board::is_on_board(xTo, yTo)) return validated_move;
 
-  std::map<Board::Position, Piece*>::iterator it_from;
+  std::map<Position, Piece*>::iterator it_from;
   bool is_occupied { false };
 
   if (board.turn % 2 == 0) {
-    std::map<Board::Position, Piece*>::iterator it_to_white;
+    std::map<Position, Piece*>::iterator it_to_white;
     // check if white piece on destination
-    it_to_white = board.white_pieces.find(Board::Position(xTo, yTo));
+    it_to_white = board.white_pieces.find(Position(xTo, yTo));
     if (it_to_white != board.white_pieces.end()) { return validated_move; }
 
-    std::map<Board::Position, Piece*>::iterator it_to_black;
-    it_to_black = board.black_pieces.find(Board::Position(xTo, yTo));
-    it_from = board.white_pieces.find(Board::Position(xFrom, yFrom));
+    std::map<Position, Piece*>::iterator it_to_black;
+    it_to_black = board.black_pieces.find(Position(xTo, yTo));
+    it_from = board.white_pieces.find(Position(xFrom, yFrom));
 
     if (it_from != board.white_pieces.end()) {
       std::string piece_type { it_from -> second -> get_type() };
       if (it_to_black != board.black_pieces.end()) is_occupied = true;
 
       if (piece_type == "King") {
-        std::map<int, std::pair<int, int>> possible_moves = Possible_Moves::king_moves(board, xFrom, yFrom);
-        std::map<int, std::pair<int, int>>::iterator it_king;
+        std::map<int, Position> possible_moves = Possible_Moves::king_moves(board, xFrom, yFrom);
+        std::map<int, Position>::iterator it_king;
         for (it_king = possible_moves.begin(); it_king != possible_moves.end(); ++it_king) {
-          if (it_king -> second.first == xTo && it_king -> second.second == yTo) {
+          if (it_king -> second.x == xTo && it_king -> second.y == yTo) {
             validated_move.push_back(piece_type);
             if (is_occupied) {
               validated_move.push_back(it_to_black -> second -> get_type());
@@ -60,25 +60,25 @@ std::vector<std::string> is_valid_move(Board& board, int xFrom, int yFrom, int x
       return validated_move;
     }
   } else {
-    std::map<Board::Position, Piece*>::iterator it_to_black;
+    std::map<Position, Piece*>::iterator it_to_black;
     // check if black piece on destination
-    it_to_black = board.black_pieces.find(Board::Position(xTo, yTo));
+    it_to_black = board.black_pieces.find(Position(xTo, yTo));
     if (it_to_black != board.black_pieces.end()) { return validated_move; }
 
     // check if white piece on destination - capture
-    std::map<Board::Position, Piece*>::iterator it_to_white;
-    it_to_white = board.white_pieces.find(Board::Position(xTo, yTo));
-    it_from = board.black_pieces.find(Board::Position(xFrom, yFrom));
+    std::map<Position, Piece*>::iterator it_to_white;
+    it_to_white = board.white_pieces.find(Position(xTo, yTo));
+    it_from = board.black_pieces.find(Position(xFrom, yFrom));
 
     if (it_from != board.black_pieces.end()) {
       std::string piece_type = it_from -> second -> get_type();
       if (it_to_white != board.white_pieces.end()) is_occupied = true;
 
       if (piece_type == "King") {
-        std::map<int, std::pair<int, int>> possible_moves = Possible_Moves::king_moves(board, xFrom, yFrom);
-        std::map<int, std::pair<int, int>>::iterator it_king;
+        std::map<int, Position> possible_moves = Possible_Moves::king_moves(board, xFrom, yFrom);
+        std::map<int, Position>::iterator it_king;
         for (it_king = possible_moves.begin(); it_king != possible_moves.end(); ++it_king) {
-          if (it_king -> second.first == xTo && it_king -> second.second == yTo) {
+          if (it_king -> second.x == xTo && it_king -> second.y == yTo) {
             validated_move.push_back(piece_type);
             if (is_occupied) {
               validated_move.push_back(it_to_white -> second -> get_type());
@@ -126,36 +126,36 @@ bool move_piece(Board& board)
   std::vector<std::string> moved_piece = is_valid_move(board, xFrom, yFrom, xTo, yTo);
 
   if (!moved_piece.empty()) {
-    std::map<Board::Position, Piece*>::iterator it;
+    std::map<Position, Piece*>::iterator it;
     std::string board_char {};
 
     if (board.turn % 2 == 0) {
       /* updating pointer map flow */
 
       // 1. find pointer to piece being moved
-      it = board.white_pieces.find(Board::Position(xFrom, yFrom));
+      it = board.white_pieces.find(Position(xFrom, yFrom));
       board_char = it -> second -> get_board_char();
       // 2. assign piece pointer to new position
-      board.white_pieces[Board::Position(xTo, yTo)] = it -> second;
+      board.white_pieces[Position(xTo, yTo)] = it -> second;
       board.board[xTo][yTo] = "\x1b[1;97m" + board_char;
       // 4. Erase map entry of old position
-      board.white_pieces.erase(Board::Position(xFrom, yFrom));
+      board.white_pieces.erase(Position(xFrom, yFrom));
     } else {
       /* updating pointer map flow */
 
       // 1. find pointer to piece being moved
-      it = board.black_pieces.find(Board::Position(xFrom, yFrom));
+      it = board.black_pieces.find(Position(xFrom, yFrom));
       board_char = it -> second -> get_board_char();
       // 2. assign piece pointer to new position
-      board.black_pieces[Board::Position(xTo, yTo)] = it -> second;
+      board.black_pieces[Position(xTo, yTo)] = it -> second;
       board.board[xTo][yTo] = "\x1b[1;30m" + board_char;
       // 4. Erase map entry of old position
-      board.black_pieces.erase(Board::Position(xFrom, yFrom));
+      board.black_pieces.erase(Position(xFrom, yFrom));
     }
 
     // call board.is_check(board_char, turn, xTo, yTo)
     // if (check) call board.is_checkmate()
-    std::map<int, std::pair<int, int>> next_moves = board.next_possible_moves(board_char, xTo, yTo);
+    std::map<int, Position> next_moves = board.next_possible_moves(board_char, xTo, yTo);
     board.set_last_piece(board_char);
     board.set_last_piece_possible_moves(next_moves);
     std::string check_status {};

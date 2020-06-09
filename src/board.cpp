@@ -126,7 +126,7 @@ std::map<std::string, std::string> Board::print_move_prompt() {
     int column { grid_translator_to_index[square_substr[0]] };
     std::string moving_piece { get_piece_from_coordinates(square_substr) };
     
-    std::map<int, std::pair<int, int>> moves;
+    std::map<int, Position> moves;
     if (moving_piece == "P") {
       moves = Possible_Moves::pawn_moves(*this, row, column);
     } else if (moving_piece == "Kn") {
@@ -178,16 +178,16 @@ std::map<std::string, std::string> Board::print_move_prompt() {
   return move;
 }
 
-bool Board::has_black_piece(int x, int y)
+bool Board::has_black_piece(int x, int y) const
 {
-  std::map<Position, Piece*>::iterator it = black_pieces.find(Position(x, y));
+  const std::map<Position, Piece*>::const_iterator it = black_pieces.find(Position(x, y));
   if (it != black_pieces.end()) return true;
   return false;
 }
 
-bool Board::has_white_piece(int x, int y)
+bool Board::has_white_piece(int x, int y) const
 {
-  std::map<Position, Piece*>::iterator it = white_pieces.find(Position(x, y));
+  const std::map<Position, Piece*>::const_iterator it = white_pieces.find(Position(x, y));
   if (it != white_pieces.end()) return true;
   return false;
 }
@@ -207,17 +207,17 @@ std::pair<int, int> Board::find_king(char color)
   return king_location;
 }
 
-void Board::print_possible_moves(std::map<int, std::pair<int, int>> moves) 
+void Board::print_possible_moves(const std::map<int, Position>& moves) 
 {
   std::map<int, char>::iterator it;
-  std::map<int, std::pair<int, int>>::size_type length = moves.size();
+  std::map<int, Position>::size_type length = moves.size();
   int counter { 0 };
   std::cout << "\nPossible moves: ";
 
   for (auto move : moves) {
     ++counter;
-    it = grid_translator_to_letter.find(move.second.second);
-    int invertedY = 8 - move.second.first;
+    it = grid_translator_to_letter.find(move.second.y);
+    int invertedY = 8 - move.second.x;
     std::cout << it -> second << invertedY << (length == counter ? "\n" : ", ");
   }
   std::cout << "\n";
@@ -231,18 +231,18 @@ std::string Board::get_piece_from_coordinates(std::string square) {
   return piece.substr(pos + 1);
 }
 
-std::vector<std::vector<int>> Board::parse_move_input(std::map<std::string, std::string>& move) {
+std::vector<std::vector<int>> Board::parse_move_input(const std::map<std::string, std::string>& move) {
   char letterTo, letterFrom;
   int numberTo, numberFrom;
   int xTo, yTo, xFrom, yFrom;
 
-  for (int i = 0; i < move["spaceFrom"].length(); ++i) {
+  for (int i = 0; i < move.at("spaceFrom").length(); ++i) {
     if (i == 0) {
-      letterFrom = move["spaceFrom"][i];
-      letterTo = move["spaceTo"][i];
+      letterFrom = move.at("spaceFrom")[i];
+      letterTo = move.at("spaceTo")[i];
     } else {
-      numberFrom = move["spaceFrom"][i] - '0';
-      numberTo = move["spaceTo"][i] - '0';
+      numberFrom = move.at("spaceFrom")[i] - '0';
+      numberTo = move.at("spaceTo")[i] - '0';
     }
   }
 
@@ -259,9 +259,9 @@ std::vector<std::vector<int>> Board::parse_move_input(std::map<std::string, std:
   return parsed_move;
 }
 
-std::map<int, std::pair<int, int>> Board::next_possible_moves(std::string board_char, int x, int y) {
+std::map<int, Board::Position> Board::next_possible_moves(std::string board_char, int x, int y) {
   // call possible_moves function for piece type (board_char) from x,y
-  std::map<int, std::pair<int, int>> moves;
+  std::map<int, Position> moves;
   if (board_char == "P") {
     moves = Possible_Moves::pawn_moves(*this, x, y);
   } else if (board_char == "Kn") {
@@ -276,7 +276,7 @@ std::map<int, std::pair<int, int>> Board::next_possible_moves(std::string board_
   return moves;
 }
 
-bool Board::is_check(std::map<int, std::pair<int, int>> next_moves) 
+bool Board::is_check(const std::map<int, Position>& next_moves) 
 {
   // find where location of king is in opposing piece map
   std::map<int, std::pair<int, int>> moves;
@@ -286,7 +286,7 @@ bool Board::is_check(std::map<int, std::pair<int, int>> next_moves)
 
   // if location of king is in possible_moves vector, return location of king and possible moves vector
   for (auto move : next_moves) {
-    if (xKing == move.second.first && yKing == move.second.second) {
+    if (xKing == move.second.x && yKing == move.second.y) {
       return true;
     }
   }
@@ -298,7 +298,7 @@ bool Board::is_checkmate() {
   std::pair<int, int> king_location = find_king(turn % 2 == 0 ? 'b' : 'w');
 
   // possible moves of opposing king
-  std::map<int, std::pair<int, int>> king_moves = Possible_Moves::king_moves(*this, king_location.first, king_location.second);
+  std::map<int, Position> king_moves = Possible_Moves::king_moves(*this, king_location.first, king_location.second);
 
   if (king_moves.empty()) return true;
   return false;

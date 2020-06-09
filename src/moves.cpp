@@ -1,8 +1,8 @@
 #include "../include/Moves.hpp"
 
-std::map<int, std::pair<int, int>> Possible_Moves::pawn_moves(Board& board, int x, int y) 
+std::map<int, Position> Possible_Moves::pawn_moves(const Board& board, int x, int y) 
 {
-  std::map<int, std::pair<int, int>> moves {};
+  std::map<int, Position> moves {};
   if (board.turn % 2 == 0) { // white move
     if (!board.is_on_board(x - 1, y)) return moves;
 
@@ -46,11 +46,11 @@ std::map<int, std::pair<int, int>> Possible_Moves::pawn_moves(Board& board, int 
   return moves;
 }
 
-std::map<int, std::pair<int, int>> Possible_Moves::king_moves(Board& board, int x, int y)
+std::map<int, Position> Possible_Moves::king_moves(const Board& board, int x, int y)
 {
-  std::map<int, std::pair<int, int>> moves {};
-  std::map<int, std::pair<int, int>>::iterator it;
-  std::map<int, std::pair<int, int>> last_piece_possible_moves = board.get_last_piece_possible_moves();
+  std::map<int, Position> moves {};
+  std::map<int, Position>::iterator it;
+  std::map<int, Position> last_piece_possible_moves = board.get_last_piece_possible_moves();
 
   if (board.is_on_board(x - 1, y - 1) && (board.is_unoccupied(x - 1, y - 1))) {
     moves.insert({ 0, { x - 1, y - 1} });
@@ -81,21 +81,21 @@ std::map<int, std::pair<int, int>> Possible_Moves::king_moves(Board& board, int 
 
   std::vector<int> disallowed_indices;
   for (auto next_move : last_piece_possible_moves) {
-    if (next_move.second.first == x - 1 && next_move.second.second == y - 1) {
+    if (next_move.second.x == x - 1 && next_move.second.y == y - 1) {
       disallowed_indices.push_back(0);
-    } else if (next_move.second.first == x - 1 && next_move.second.second == y) {
+    } else if (next_move.second.x == x - 1 && next_move.second.y == y) {
       disallowed_indices.push_back(1);
-    } else if (next_move.second.first == x - 1 && next_move.second.second == y + 1) {
+    } else if (next_move.second.x == x - 1 && next_move.second.y == y + 1) {
       disallowed_indices.push_back(2);
-    } else if (next_move.second.first == x && next_move.second.second == y - 1) {
+    } else if (next_move.second.x == x && next_move.second.y - 1) {
       disallowed_indices.push_back(6);
-    } else if (next_move.second.first == x && next_move.second.second == y + 1) {
+    } else if (next_move.second.x == x && next_move.second.y + 1) {
       disallowed_indices.push_back(7);
-    } else if (next_move.second.first == x + 1 && next_move.second.second == y - 1) {
+    } else if (next_move.second.x == x + 1 && next_move.second.y == y - 1) {
       disallowed_indices.push_back(3);
-    } else if (next_move.second.first == x + 1 && next_move.second.second == y) {
+    } else if (next_move.second.x == x + 1 && next_move.second.y == y) {
       disallowed_indices.push_back(4);
-    } else if (next_move.second.first == x + 1 && next_move.second.second == y + 1) {
+    } else if (next_move.second.x == x + 1 && next_move.second.y == y + 1) {
       disallowed_indices.push_back(5);
     }
   }
@@ -108,9 +108,9 @@ std::map<int, std::pair<int, int>> Possible_Moves::king_moves(Board& board, int 
   return moves;
 }
 
-std::map<int, std::pair<int, int>> Possible_Moves::bishop_moves(Board& board, int x, int y) 
+std::map<int, Position> Possible_Moves::bishop_moves(const Board& board, int x, int y) 
 {
-  std::map<int, std::pair<int, int>> moves {};
+  std::map<int, Position> moves {};
   bool piece_disruption1 { false };
   bool piece_disruption2 { false };
   bool piece_disruption3 { false };
@@ -176,9 +176,9 @@ std::map<int, std::pair<int, int>> Possible_Moves::bishop_moves(Board& board, in
   return moves;
 }
 
-std::map<int, std::pair<int, int>> Possible_Moves::rook_moves(Board& board, int x, int y) 
+std::map<int, Position> Possible_Moves::rook_moves(const Board& board, int x, int y) 
 {
-  std::map<int, std::pair<int, int>> moves {};
+  std::map<int, Position> moves {};
   bool piece_disruption1 { false };
   bool piece_disruption2 { false };
   bool piece_disruption3 { false };
@@ -244,15 +244,15 @@ std::map<int, std::pair<int, int>> Possible_Moves::rook_moves(Board& board, int 
   return moves;
 }
 
-std::map<int, std::pair<int, int>> Possible_Moves::queen_moves(Board& board, int x, int y) 
+std::map<int, Position> Possible_Moves::queen_moves(const Board& board, int x, int y) 
 {
   // same as both rook and bishop
-  std::map<int, std::pair<int, int>> rooks = rook_moves(board, x, y);
-  std::map<int, std::pair<int, int>> bishops = bishop_moves(board, x, y);
-  std::map<int, std::pair<int, int>>::iterator rook_it;
-  std::map<int, std::pair<int, int>>::iterator bishop_it;
+  std::map<int, Position> rooks = rook_moves(board, x, y);
+  std::map<int, Position> bishops = bishop_moves(board, x, y);
+  std::map<int, Position>::iterator rook_it;
+  std::map<int, Position>::iterator bishop_it;
 
-  std::map<int, std::pair<int, int>> moves {};
+  std::map<int, Position> moves {};
   int counter = rooks.size();
 
   for (rook_it = rooks.begin(); rook_it != rooks.end(); ++rook_it) {
@@ -267,9 +267,9 @@ std::map<int, std::pair<int, int>> Possible_Moves::queen_moves(Board& board, int
   return moves;
 }
 
-std::map<int, std::pair<int, int>> Possible_Moves::knight_moves(Board& board, int x, int y) 
+std::map<int, Position> Possible_Moves::knight_moves(const Board& board, int x, int y) 
 {
-  std::map<int, std::pair<int, int>> moves {};
+  std::map<int, Position> moves {};
 
   if (board.is_on_board(x - 1, y - 2)) {
     if (board.turn == 2 && !board.has_white_piece(x - 1, y - 2)) moves.insert({ 1, { x - 1, y - 2 } });

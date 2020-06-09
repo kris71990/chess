@@ -1,6 +1,8 @@
 #include <vector>
 #include <map>
 
+#include "Position.hpp"
+
 #ifndef GAME_INFO_H
 #define GAME_INFO_H
 
@@ -19,17 +21,15 @@ public:
   void print_initial_prompt();
 
   virtual std::map<std::string, std::string> print_move_prompt() = 0;
-  std::map<std::string, int> parse_current_move(std::map<std::string, std::string>& current_move);
 
-  std::map<int, std::pair<int, int>> get_last_piece_possible_moves();
-  void set_last_piece_possible_moves(std::map<int, std::pair<int, int>> next_moves);
-  void set_last_piece(std::string piece);
+  std::map<int, Position> get_last_piece_possible_moves() const;
+  void set_last_piece_possible_moves(const std::map<int, Position>& next_moves);
+  void set_last_piece(const std::string& piece);
   std::string get_last_piece();
 
 private:
-  std::map<int, std::pair<int, int>> last_piece_possible_moves;
+  std::map<int, Position> last_piece_possible_moves;
   std::string last_piece;
-  // std::vector<std::vector<std::string, std::map<int, int>>> log_raw;
 };
 
 #endif

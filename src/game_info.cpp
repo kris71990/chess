@@ -6,15 +6,15 @@
 #include "../include/Game_Info.hpp"
 #include "../include/Moves.hpp"
 
-std::map<int, std::pair<int, int>> Game_Info::get_last_piece_possible_moves() {
-  return last_piece_possible_moves;
+std::map<int, Position> Game_Info::get_last_piece_possible_moves() const { 
+  return last_piece_possible_moves; 
 }
 
-void Game_Info::set_last_piece_possible_moves(std::map<int, std::pair<int, int>> previous_piece) {
+void Game_Info::set_last_piece_possible_moves(const std::map<int, Position>& previous_piece) {
   last_piece_possible_moves = previous_piece;
 }
 
-void Game_Info::set_last_piece(std::string piece) { last_piece = piece; }
+void Game_Info::set_last_piece(const std::string& piece) { last_piece = piece; }
 std::string Game_Info::get_last_piece() { return last_piece; }
 
 void Game_Info::print_game_log() 
